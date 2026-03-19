@@ -10,16 +10,16 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Hardware Connection
 
 - [ ] **HW-01**: User can discover and select an RTL-SDR V3/V4 dongle via WebUSB device picker
-- [ ] **HW-02**: User can connect to selected RTL-SDR and see connection status (connected/disconnected/error)
-- [ ] **HW-03**: User can set manual gain level for the RTL-SDR tuner
-- [ ] **HW-04**: User can set center frequency for the RTL-SDR
-- [ ] **HW-05**: User can select sample rate for the RTL-SDR
+- [x] **HW-02**: User can connect to selected RTL-SDR and see connection status (connected/disconnected/error)
+- [x] **HW-03**: User can set manual gain level for the RTL-SDR tuner
+- [x] **HW-04**: User can set center frequency for the RTL-SDR
+- [x] **HW-05**: User can select sample rate for the RTL-SDR
 
 ### UHF RFID Region & Tuning
 
-- [ ] **TUNE-01**: User can select a UHF RFID region preset (EU 865-868 MHz, US 902-928 MHz, China 920-925 MHz, Japan 916-921 MHz)
-- [ ] **TUNE-02**: Region selection auto-sets center frequency to the selected band
-- [ ] **TUNE-03**: User can manually override frequency within or outside region presets
+- [x] **TUNE-01**: User can select a UHF RFID region preset (EU 865-868 MHz, US 902-928 MHz, China 920-925 MHz, Japan 916-921 MHz)
+- [x] **TUNE-02**: Region selection auto-sets center frequency to the selected band
+- [x] **TUNE-03**: User can manually override frequency within or outside region presets
 
 ### RF Visualization
 
@@ -56,10 +56,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Application runs as a client-side SPA with no server dependency
-- [ ] **INFRA-02**: COOP/COEP headers configured for SharedArrayBuffer support
+- [x] **INFRA-01**: Application runs as a client-side SPA with no server dependency
+- [x] **INFRA-02**: COOP/COEP headers configured for SharedArrayBuffer support
 - [ ] **INFRA-03**: DSP processing runs in Web Workers (not on main thread)
-- [ ] **INFRA-04**: Application displays clear error when browser does not support WebUSB
+- [x] **INFRA-04**: Application displays clear error when browser does not support WebUSB
 
 ## v2 Requirements
 
@@ -101,13 +101,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | HW-01 | Phase 1 | Pending |
-| HW-02 | Phase 1 | Pending |
-| HW-03 | Phase 1 | Pending |
-| HW-04 | Phase 1 | Pending |
-| HW-05 | Phase 1 | Pending |
-| TUNE-01 | Phase 1 | Pending |
-| TUNE-02 | Phase 1 | Pending |
-| TUNE-03 | Phase 1 | Pending |
+| HW-02 | Phase 1 | Complete |
+| HW-03 | Phase 1 | Complete |
+| HW-04 | Phase 1 | Complete |
+| HW-05 | Phase 1 | Complete |
+| TUNE-01 | Phase 1 | Complete |
+| TUNE-02 | Phase 1 | Complete |
+| TUNE-03 | Phase 1 | Complete |
 | VIS-01 | Phase 2 | Pending |
 | VIS-02 | Phase 2 | Pending |
 | VIS-03 | Phase 2 | Pending |
@@ -132,10 +132,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TL-04 | Phase 4 | Pending |
 | TL-05 | Phase 4 | Pending |
 | TL-06 | Phase 4 | Pending |
-| INFRA-01 | Phase 1 | Pending |
-| INFRA-02 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
+| INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
+| INFRA-04 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 36 total
