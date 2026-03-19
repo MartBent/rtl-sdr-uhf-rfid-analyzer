@@ -1,7 +1,7 @@
 # Requirements: UHF RFID Analyzer
 
 **Defined:** 2026-03-19
-**Core Value:** Engineers can see exactly what their UHF RFID reader is transmitting — decoded EPC Gen2 commands with timing, raw bits, and RF visualization — without expensive dedicated test equipment.
+**Core Value:** Engineers can see exactly what their UHF RFID reader is transmitting -- decoded EPC Gen2 commands with timing, raw bits, and RF visualization -- without expensive dedicated test equipment.
 
 ## v1 Requirements
 
@@ -41,8 +41,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **DEC-08**: System decodes ReqRN command with RN16 and CRC parameters
 - [ ] **DEC-09**: System validates CRC-16 on decoded frames and displays pass/fail
 - [ ] **DEC-10**: System displays raw bits/symbols alongside each decoded command
-- [ ] **DEC-11**: System adapts to varying Tari values (6.25-25μs) by detecting preamble timing
-- [ ] **DEC-12**: System groups decoded commands into inventory rounds (Query→ACK sequences)
+- [ ] **DEC-11**: System adapts to varying Tari values (6.25-25us) by detecting preamble timing
+- [ ] **DEC-12**: System groups decoded commands into inventory rounds (Query->ACK sequences)
 - [ ] **DEC-13**: System attempts FM0/Miller backscatter decoding for tag responses (best-effort, clearly marked as experimental)
 
 ### Timeline / Message View
@@ -100,48 +100,48 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HW-01 | TBD | Pending |
-| HW-02 | TBD | Pending |
-| HW-03 | TBD | Pending |
-| HW-04 | TBD | Pending |
-| HW-05 | TBD | Pending |
-| TUNE-01 | TBD | Pending |
-| TUNE-02 | TBD | Pending |
-| TUNE-03 | TBD | Pending |
-| VIS-01 | TBD | Pending |
-| VIS-02 | TBD | Pending |
-| VIS-03 | TBD | Pending |
-| VIS-04 | TBD | Pending |
-| VIS-05 | TBD | Pending |
-| DEC-01 | TBD | Pending |
-| DEC-02 | TBD | Pending |
-| DEC-03 | TBD | Pending |
-| DEC-04 | TBD | Pending |
-| DEC-05 | TBD | Pending |
-| DEC-06 | TBD | Pending |
-| DEC-07 | TBD | Pending |
-| DEC-08 | TBD | Pending |
-| DEC-09 | TBD | Pending |
-| DEC-10 | TBD | Pending |
-| DEC-11 | TBD | Pending |
-| DEC-12 | TBD | Pending |
-| DEC-13 | TBD | Pending |
-| TL-01 | TBD | Pending |
-| TL-02 | TBD | Pending |
-| TL-03 | TBD | Pending |
-| TL-04 | TBD | Pending |
-| TL-05 | TBD | Pending |
-| TL-06 | TBD | Pending |
-| INFRA-01 | TBD | Pending |
-| INFRA-02 | TBD | Pending |
-| INFRA-03 | TBD | Pending |
-| INFRA-04 | TBD | Pending |
+| HW-01 | Phase 1 | Pending |
+| HW-02 | Phase 1 | Pending |
+| HW-03 | Phase 1 | Pending |
+| HW-04 | Phase 1 | Pending |
+| HW-05 | Phase 1 | Pending |
+| TUNE-01 | Phase 1 | Pending |
+| TUNE-02 | Phase 1 | Pending |
+| TUNE-03 | Phase 1 | Pending |
+| VIS-01 | Phase 2 | Pending |
+| VIS-02 | Phase 2 | Pending |
+| VIS-03 | Phase 2 | Pending |
+| VIS-04 | Phase 2 | Pending |
+| VIS-05 | Phase 2 | Pending |
+| DEC-01 | Phase 3 | Pending |
+| DEC-02 | Phase 3 | Pending |
+| DEC-03 | Phase 3 | Pending |
+| DEC-04 | Phase 3 | Pending |
+| DEC-05 | Phase 3 | Pending |
+| DEC-06 | Phase 3 | Pending |
+| DEC-07 | Phase 3 | Pending |
+| DEC-08 | Phase 3 | Pending |
+| DEC-09 | Phase 3 | Pending |
+| DEC-10 | Phase 3 | Pending |
+| DEC-11 | Phase 3 | Pending |
+| DEC-12 | Phase 3 | Pending |
+| DEC-13 | Phase 3 | Pending |
+| TL-01 | Phase 4 | Pending |
+| TL-02 | Phase 4 | Pending |
+| TL-03 | Phase 4 | Pending |
+| TL-04 | Phase 4 | Pending |
+| TL-05 | Phase 4 | Pending |
+| TL-06 | Phase 4 | Pending |
+| INFRA-01 | Phase 1 | Pending |
+| INFRA-02 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Pending |
+| INFRA-04 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 36 total
-- Mapped to phases: 0
-- Unmapped: 36 ⚠️
+- Mapped to phases: 36
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-19 after initial definition*
+*Last updated: 2026-03-19 after roadmap creation*
