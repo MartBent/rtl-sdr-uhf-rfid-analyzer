@@ -29,12 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can select a UHF RFID region preset (EU, US, China, Japan) and see the center frequency auto-update to the selected band, or manually override frequency, gain, and sample rate
   4. IQ samples flow from the RTL-SDR through a USB Worker to a DSP Worker via SharedArrayBuffer without blocking the main UI thread (verified by UI remaining responsive during active capture)
   5. COOP/COEP headers are configured so SharedArrayBuffer is available in both development and production environments
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md -- Scaffold SvelteKit SPA, install dependencies, configure COOP/COEP headers, create types/config/state modules and unit tests
+- [ ] 01-02-PLAN.md -- Build USB Worker with RTL-SDR device wrapper, DSP Worker skeleton, SharedArrayBuffer ring buffer, and worker bridge
+- [ ] 01-03-PLAN.md -- Build complete UI (status bar, connection controls, tuning panel, capture controls, placeholder panels) and human verification
 
 ### Phase 2: RF Visualization
 **Goal**: Engineers can see live RF activity in the UHF RFID band as both a spectrum display and a scrolling waterfall, visually confirming that their hardware is working and RFID reader transmissions are present
