@@ -9,7 +9,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Hardware Connection
 
-- [ ] **HW-01**: User can discover and select an RTL-SDR V3/V4 dongle via WebUSB device picker
+- [x] **HW-01**: User can discover and select an RTL-SDR V3/V4 dongle via WebUSB device picker
 - [x] **HW-02**: User can connect to selected RTL-SDR and see connection status (connected/disconnected/error)
 - [x] **HW-03**: User can set manual gain level for the RTL-SDR tuner
 - [x] **HW-04**: User can set center frequency for the RTL-SDR
@@ -58,7 +58,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **INFRA-01**: Application runs as a client-side SPA with no server dependency
 - [x] **INFRA-02**: COOP/COEP headers configured for SharedArrayBuffer support
-- [ ] **INFRA-03**: DSP processing runs in Web Workers (not on main thread)
+- [x] **INFRA-03**: DSP processing runs in Web Workers (not on main thread)
 - [x] **INFRA-04**: Application displays clear error when browser does not support WebUSB
 
 ## v2 Requirements
@@ -100,7 +100,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HW-01 | Phase 1 | Pending |
+| HW-01 | Phase 1 | Complete |
 | HW-02 | Phase 1 | Complete |
 | HW-03 | Phase 1 | Complete |
 | HW-04 | Phase 1 | Complete |
@@ -134,7 +134,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TL-06 | Phase 4 | Pending |
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Complete |
-| INFRA-03 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Complete |
 | INFRA-04 | Phase 1 | Complete |
 
 **Coverage:**

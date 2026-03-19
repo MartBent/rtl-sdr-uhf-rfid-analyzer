@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-19T15:26:43.817Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-19T15:46:49.499Z"
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -47,6 +47,7 @@ Plan: 2 of 3
 
 *Updated after each plan completion*
 | Phase 01 P01 | 5min | 2 tasks | 21 files |
+| Phase 01 P02 | 9min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,9 @@ Recent decisions affecting current work:
 - [Research]: Custom C/Emscripten WASM required for EPC Gen2 PIE demodulation -- no existing library; JS too slow for 2.4 MSPS
 - [Phase 01]: Removed vite-plugin-top-level-await -- incompatible with Vite 8 Rolldown; native support in Vite 8
 - [Phase 01]: Used Svelte 5 $props() with @render children() instead of deprecated slot syntax
+- [Phase 01]: Used RTL2832U.open() directly instead of RTL2832U_Provider for worker-compatible WebUSB pattern
+- [Phase 01]: Ring buffer created per capture session in USB Worker, not at init -- allows clean state per session
+- [Phase 01]: MessageChannel for direct USB-to-DSP worker communication -- bypasses main thread for IQ data
 
 ### Pending Todos
 
@@ -73,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T15:26:43.814Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-19T15:46:49.497Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
