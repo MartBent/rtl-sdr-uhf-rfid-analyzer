@@ -32,16 +32,16 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Protocol Decoding
 
 - [x] **DEC-01**: System demodulates EPC Gen2 PIE-encoded reader commands from raw IQ samples
-- [ ] **DEC-02**: System decodes Query command with parameters (DR, M, TRext, Sel, Session, Target, Q)
-- [ ] **DEC-03**: System decodes QueryRep command with session parameter
-- [ ] **DEC-04**: System decodes QueryAdjust command with session and up/down parameters
-- [ ] **DEC-05**: System decodes ACK command with RN16 parameter
-- [ ] **DEC-06**: System decodes NAK command
-- [ ] **DEC-07**: System decodes Select command with target, action, membank, pointer, length, mask, truncate parameters
-- [ ] **DEC-08**: System decodes ReqRN command with RN16 and CRC parameters
-- [ ] **DEC-09**: System validates CRC-16 on decoded frames and displays pass/fail
-- [ ] **DEC-10**: System displays raw bits/symbols alongside each decoded command
-- [ ] **DEC-11**: System adapts to varying Tari values (6.25-25us) by detecting preamble timing
+- [x] **DEC-02**: System decodes Query command with parameters (DR, M, TRext, Sel, Session, Target, Q)
+- [x] **DEC-03**: System decodes QueryRep command with session parameter
+- [x] **DEC-04**: System decodes QueryAdjust command with session and up/down parameters
+- [x] **DEC-05**: System decodes ACK command with RN16 parameter
+- [x] **DEC-06**: System decodes NAK command
+- [x] **DEC-07**: System decodes Select command with target, action, membank, pointer, length, mask, truncate parameters
+- [x] **DEC-08**: System decodes ReqRN command with RN16 and CRC parameters
+- [x] **DEC-09**: System validates CRC-16 on decoded frames and displays pass/fail
+- [x] **DEC-10**: System displays raw bits/symbols alongside each decoded command
+- [x] **DEC-11**: System adapts to varying Tari values (6.25-25us) by detecting preamble timing
 - [ ] **DEC-12**: System groups decoded commands into inventory rounds (Query->ACK sequences)
 - [ ] **DEC-13**: System attempts FM0/Miller backscatter decoding for tag responses (best-effort, clearly marked as experimental)
 
@@ -114,16 +114,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VIS-04 | Phase 2 | Complete |
 | VIS-05 | Phase 2 | Complete |
 | DEC-01 | Phase 3 | Complete |
-| DEC-02 | Phase 3 | Pending |
-| DEC-03 | Phase 3 | Pending |
-| DEC-04 | Phase 3 | Pending |
-| DEC-05 | Phase 3 | Pending |
-| DEC-06 | Phase 3 | Pending |
-| DEC-07 | Phase 3 | Pending |
-| DEC-08 | Phase 3 | Pending |
-| DEC-09 | Phase 3 | Pending |
-| DEC-10 | Phase 3 | Pending |
-| DEC-11 | Phase 3 | Pending |
+| DEC-02 | Phase 3 | Complete |
+| DEC-03 | Phase 3 | Complete |
+| DEC-04 | Phase 3 | Complete |
+| DEC-05 | Phase 3 | Complete |
+| DEC-06 | Phase 3 | Complete |
+| DEC-07 | Phase 3 | Complete |
+| DEC-08 | Phase 3 | Complete |
+| DEC-09 | Phase 3 | Complete |
+| DEC-10 | Phase 3 | Complete |
+| DEC-11 | Phase 3 | Complete |
 | DEC-12 | Phase 3 | Pending |
 | DEC-13 | Phase 3 | Pending |
 | TL-01 | Phase 4 | Pending |
