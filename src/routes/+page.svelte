@@ -1,1 +1,53 @@
-<h1 class="text-2xl font-bold p-8">UHF RFID Analyzer</h1>
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { detectFeatures, getMissingFeatureMessage } from '$lib/utils/feature-detect';
+	import { createWorkerBridge, type WorkerBridge } from '$lib/workers/worker-bridge';
+	import UnsupportedBanner from '$lib/components/UnsupportedBanner.svelte';
+	import ConnectionPanel from '$lib/components/ConnectionPanel.svelte';
+	import TuningPanel from '$lib/components/TuningPanel.svelte';
+	import CaptureControls from '$lib/components/CaptureControls.svelte';
+	import PlaceholderPanel from '$lib/components/PlaceholderPanel.svelte';
+
+	let unsupportedMessage = $state<string | null>(null);
+	let bridge = $state<WorkerBridge | null>(null);
+
+	onMount(() => {
+		const features = detectFeatures();
+		const msg = getMissingFeatureMessage(features);
+
+		if (msg) {
+			unsupportedMessage = msg;
+			return;
+		}
+
+		bridge = createWorkerBridge();
+
+		return () => {
+			bridge?.destroy();
+		};
+	});
+</script>
+
+{#if unsupportedMessage}
+	<UnsupportedBanner message={unsupportedMessage} />
+{:else if bridge}
+	<div class="flex flex-1">
+		<!-- Sidebar -->
+		<aside class="flex w-72 flex-col gap-3 border-r border-gray-700 bg-gray-950 p-3">
+			<ConnectionPanel {bridge} />
+			<TuningPanel {bridge} />
+			<CaptureControls {bridge} />
+		</aside>
+
+		<!-- Main content area -->
+		<main class="flex flex-1 flex-col gap-3 p-3">
+			<PlaceholderPanel title="Spectrum (Phase 2)" />
+			<PlaceholderPanel title="Waterfall (Phase 2)" />
+			<PlaceholderPanel title="Timeline (Phase 4)" />
+		</main>
+	</div>
+{:else}
+	<div class="flex flex-1 items-center justify-center">
+		<span class="text-gray-500">Initializing...</span>
+	</div>
+{/if}
