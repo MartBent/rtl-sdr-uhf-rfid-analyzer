@@ -42,8 +42,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **DEC-09**: System validates CRC-16 on decoded frames and displays pass/fail
 - [x] **DEC-10**: System displays raw bits/symbols alongside each decoded command
 - [x] **DEC-11**: System adapts to varying Tari values (6.25-25us) by detecting preamble timing
-- [ ] **DEC-12**: System groups decoded commands into inventory rounds (Query->ACK sequences)
-- [ ] **DEC-13**: System attempts FM0/Miller backscatter decoding for tag responses (best-effort, clearly marked as experimental)
+- [x] **DEC-12**: System groups decoded commands into inventory rounds (Query->ACK sequences)
+- [x] **DEC-13**: System attempts FM0/Miller backscatter decoding for tag responses (best-effort, clearly marked as experimental)
 
 ### Timeline / Message View
 
@@ -124,8 +124,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEC-09 | Phase 3 | Complete |
 | DEC-10 | Phase 3 | Complete |
 | DEC-11 | Phase 3 | Complete |
-| DEC-12 | Phase 3 | Pending |
-| DEC-13 | Phase 3 | Pending |
+| DEC-12 | Phase 3 | Complete |
+| DEC-13 | Phase 3 | Complete |
 | TL-01 | Phase 4 | Pending |
 | TL-02 | Phase 4 | Pending |
 | TL-03 | Phase 4 | Pending |

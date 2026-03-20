@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-03-20T13:39:54.001Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-03-20T13:41:23.625Z"
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 10
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -51,6 +51,7 @@ Plan: 5 of 5
 | Phase 03 P02 | 6min | 2 tasks | 6 files |
 | Phase 03 P01 | 10min | 2 tasks | 7 files |
 | Phase 03 P04 | 5min | 2 tasks | 3 files |
+| Phase 03 P03 | 6min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,8 @@ Recent decisions affecting current work:
 - [Phase 03]: EBV uses 8-bit octets (1 continuation + 7 value bits) per Gen2 spec
 - [Phase 03]: Demod path processes same IQ buffer as FFT path in single read loop (no data duplication)
 - [Phase 03]: WASM demod init is async with null-gate pattern; decoded commands batched at 100ms intervals
+- [Phase 03]: FM0 decoder uses normalized cross-correlation with channel amplitude gating for noise rejection
+- [Phase 03]: Ring buffer uses array slice(-MAX) for Svelte 5 reactivity (not pointer-based ring buffer)
 
 ### Pending Todos
 
@@ -94,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T13:39:53.998Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-03-20T13:41:23.622Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None
