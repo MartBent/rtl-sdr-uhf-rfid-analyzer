@@ -76,7 +76,7 @@ Each task was committed atomically:
 2. **Task 2: DemodProcessor tests (RED)** - `9ad4398` (test)
 3. **Task 2: DemodProcessor implementation (GREEN)** - `4c812ba` (feat)
 
-**Plan metadata:** [pending] (docs: complete plan)
+**Plan metadata:** `d72b97a` (docs: complete plan)
 
 _Note: Task 2 used TDD with separate RED and GREEN commits._
 

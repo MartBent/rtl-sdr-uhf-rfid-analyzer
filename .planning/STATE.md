@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-20T13:31:45.707Z"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-03-20T13:39:54.001Z"
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 10
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 03 (protocol-decoding-engine) — EXECUTING
-Plan: 2 of 5
+Plan: 5 of 5
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Plan: 2 of 5
 
 | Phase 03 P02 | 6min | 2 tasks | 6 files |
 | Phase 03 P01 | 10min | 2 tasks | 7 files |
+| Phase 03 P04 | 5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,8 @@ Recent decisions affecting current work:
 - [Phase 03]: Mock WASM testing approach for reliable vitest node-environment tests
 - [Phase 03]: CRC bit-level algorithm uses MSB-XOR (not LSB-shift-in) to match standard byte-level CRC
 - [Phase 03]: EBV uses 8-bit octets (1 continuation + 7 value bits) per Gen2 spec
+- [Phase 03]: Demod path processes same IQ buffer as FFT path in single read loop (no data duplication)
+- [Phase 03]: WASM demod init is async with null-gate pattern; decoded commands batched at 100ms intervals
 
 ### Pending Todos
 
@@ -91,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T13:31:45.703Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-03-20T13:39:53.998Z
+Stopped at: Completed 03-04-PLAN.md
 Resume file: None
