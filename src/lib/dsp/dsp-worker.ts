@@ -206,6 +206,12 @@ function handleMainMessage(msg: MainToDspMessage): void {
 			}
 			break;
 		}
+
+		case 'set-tuning': {
+			currentCenterFrequency = msg.centerFrequency;
+			currentSampleRate = msg.sampleRate;
+			break;
+		}
 	}
 }
 
@@ -218,7 +224,7 @@ self.addEventListener('message', (event: MessageEvent) => {
 		const port = event.ports[0];
 		port.onmessage = (e: MessageEvent) => handleDspMessage(e.data);
 		port.start();
-	} else if (msg?.type === 'set-fft-size' || msg?.type === 'set-averaging') {
+	} else if (msg?.type === 'set-fft-size' || msg?.type === 'set-averaging' || msg?.type === 'set-tuning') {
 		// Handle config messages from main thread
 		handleMainMessage(msg as MainToDspMessage);
 	} else if (msg?.type) {

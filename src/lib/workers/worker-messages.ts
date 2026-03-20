@@ -17,7 +17,8 @@ export type UsbToDspMessage =
 
 export type MainToDspMessage =
 	| { type: 'set-fft-size'; size: number }
-	| { type: 'set-averaging'; alpha: number };
+	| { type: 'set-averaging'; alpha: number }
+	| { type: 'set-tuning'; centerFrequency: number; sampleRate: number };
 
 export type DspToMainMessage =
 	| { type: 'dsp-ready' }

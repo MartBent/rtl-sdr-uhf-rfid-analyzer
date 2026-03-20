@@ -153,6 +153,7 @@ export function createWorkerBridge(): WorkerBridge {
 
 		configure(frequency: number, gain: number | null, sampleRate: number): void {
 			postToUsb({ type: 'configure', frequency, gain, sampleRate });
+			postToDsp({ type: 'set-tuning', centerFrequency: frequency, sampleRate });
 		},
 
 		startCapture(): void {
