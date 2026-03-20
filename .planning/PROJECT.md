@@ -14,15 +14,17 @@ Engineers can see exactly what their UHF RFID reader is transmitting — decoded
 
 <!-- Shipped and confirmed valuable. -->
 
-(None yet — ship to validate)
+- [x] Connect to RTL-SDR V3/V4 via WebUSB (discover, select, configure) — Validated in Phase 1
+- [x] Select UHF RFID region presets (EU 865-868 MHz, US 902-928 MHz, etc.) — Validated in Phase 1
+- [x] Manual tuning controls (center frequency, gain, bandwidth) — Validated in Phase 1
 
 ### Active
 
 <!-- Current scope. Building toward these. -->
 
-- [ ] Connect to RTL-SDR V3/V4 via WebUSB (discover, select, configure)
-- [ ] Select UHF RFID region presets (EU 865-868 MHz, US 902-928 MHz, etc.)
-- [ ] Manual tuning controls (center frequency, gain, bandwidth)
+- [ ] ~~Connect to RTL-SDR V3/V4 via WebUSB~~ (moved to Validated)
+- [ ] ~~Select UHF RFID region presets~~ (moved to Validated)
+- [ ] ~~Manual tuning controls~~ (moved to Validated)
 - [ ] Live spectrum display showing RF activity in selected band
 - [ ] Waterfall plot showing frequency activity over time
 - [ ] Demodulate and decode EPC Gen2 reader-to-tag commands (PIE encoding)
@@ -59,10 +61,12 @@ Engineers can see exactly what their UHF RFID reader is transmitting — decoded
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| WebUSB for SDR access | Runs entirely in browser, no server or driver install needed | — Pending |
-| RTL-SDR V3/V4 target | Most common affordable SDR, good community support | — Pending |
+| WebUSB for SDR access | Runs entirely in browser, no server or driver install needed | Confirmed — Phase 1 |
+| RTL-SDR V3/V4 target | Most common affordable SDR, good community support | Confirmed — Phase 1 |
 | Live-only for v1 | Simplifies architecture, export/replay deferred | — Pending |
-| Stack TBD | Will be determined during research phase | — Pending |
+| SvelteKit 2 SPA + Svelte 5 runes | Modern reactivity, dark-only theme, Tailwind CSS | Confirmed — Phase 1 |
+| Two-worker architecture | USB Worker + DSP Worker with SharedArrayBuffer ring buffer | Confirmed — Phase 1 |
+| @jtarrio/webrtlsdr library | Mature RTL2832U WebUSB wrapper; requires device.open() before RTL2832U.open() | Confirmed — Phase 1 |
 
 ---
-*Last updated: 2026-03-19 after initialization*
+*Last updated: 2026-03-20 after Phase 1 completion*
