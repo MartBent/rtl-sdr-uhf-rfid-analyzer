@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-03-20T10:07:26Z"
+stopped_at: "Completed 02-02-PLAN.md (Tasks 1-2; checkpoint:human-verify pending)"
+last_updated: "2026-03-20T10:15:37.776Z"
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** Engineers can see exactly what their UHF RFID reader is transmitting -- decoded EPC Gen2 commands with timing, raw bits, and RF visualization -- without expensive dedicated test equipment.
-**Current focus:** Phase 02 — rf-visualization
+**Current focus:** Phase 02 — rf-visualization (awaiting human verification)
 
 ## Current Position
 
-Phase: 02 (rf-visualization) — EXECUTING
-Plan: 2 of 2
+Phase: 02 (rf-visualization) — CHECKPOINT (human-verify)
+Plan: 2 of 2 (tasks 1-2 complete, task 3 awaiting verification)
 
 ## Performance Metrics
 
@@ -41,11 +41,12 @@ Plan: 2 of 2
 | Phase 01 P01 | 5min | 2 tasks | 21 files |
 | Phase 01 P02 | 9min | 2 tasks | 7 files |
 | Phase 02 P01 | 5min | 2 tasks | 12 files |
+| Phase 02 P02 | 4min | 2 tasks | 8 files |
 
 **Recent Trend:**
 
-- Last 5 plans: 5min
-- Trend: starting
+- Last 5 plans: 6min avg
+- Trend: stable
 
 ## Accumulated Context
 
@@ -65,6 +66,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Staging buffer in DSP Worker accumulates IQ bytes until fftSize samples available for FFT processing
 - [Phase 02]: FFT shift applied during magnitude computation loop (not separate pass) for single-loop efficiency
 - [Phase 02]: FftProcessor returns avgSpectrum reference -- caller copies before transferable postMessage
+- [Phase 02]: Waterfall uses device pixels directly (no ctx.scale) for crisp row rendering
+- [Phase 02]: rAF auto-degrade: 60-frame window, >15 slow frames degrades fps, <6 recovers
 
 ### Pending Todos
 
@@ -78,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T10:07:26Z
-Stopped at: Completed 02-01-PLAN.md
-Resume file: .planning/phases/02-rf-visualization/02-01-SUMMARY.md
+Last session: 2026-03-20T10:15:37.774Z
+Stopped at: Completed 02-02-PLAN.md (Tasks 1-2; checkpoint:human-verify pending)
+Resume file: None

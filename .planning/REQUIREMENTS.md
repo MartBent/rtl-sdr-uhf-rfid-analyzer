@@ -24,7 +24,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### RF Visualization
 
 - [x] **VIS-01**: User sees a live spectrum display (FFT) showing signal power across the tuned bandwidth
-- [ ] **VIS-02**: User sees a live waterfall/spectrogram showing frequency activity over time
+- [x] **VIS-02**: User sees a live waterfall/spectrogram showing frequency activity over time
 - [x] **VIS-03**: User can adjust FFT size (256, 512, 1024, 2048)
 - [x] **VIS-04**: User can adjust spectrum averaging for noise reduction
 - [x] **VIS-05**: Waterfall uses color mapping to indicate signal strength
@@ -109,7 +109,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TUNE-02 | Phase 1 | Complete |
 | TUNE-03 | Phase 1 | Complete |
 | VIS-01 | Phase 2 | Complete |
-| VIS-02 | Phase 2 | Pending |
+| VIS-02 | Phase 2 | Complete |
 | VIS-03 | Phase 2 | Complete |
 | VIS-04 | Phase 2 | Complete |
 | VIS-05 | Phase 2 | Complete |
