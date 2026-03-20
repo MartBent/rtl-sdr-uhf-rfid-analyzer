@@ -7,6 +7,14 @@ import type {
 } from './worker-messages';
 import { sdrState } from '$lib/state/sdr-state.svelte';
 import { updateStats, resetStats } from '$lib/state/stats-state.svelte';
+import {
+	pushDecodedCommands,
+	pushRoundUpdates,
+	updateDecodeStats,
+	resetDecodeState,
+	setDecodeActive,
+} from '$lib/state/decode-state.svelte';
+import type { Gen2Command } from '$lib/protocol/gen2-types';
 
 /**
  * Public interface for controlling the USB/DSP worker pipeline.
@@ -29,6 +37,8 @@ export interface WorkerBridge {
 	destroy(): void;
 	/** Set callback for FFT data from DSP Worker. */
 	onFftData: ((bins: Float32Array, binCount: number, centerFrequency: number, sampleRate: number) => void) | null;
+	/** Set callback for decoded command data from DSP Worker. */
+	onDecodedData: ((commands: Gen2Command[]) => void) | null;
 	/** Send FFT size change to DSP Worker. */
 	setFftSize(size: number): void;
 	/** Send averaging alpha change to DSP Worker. */
@@ -104,6 +114,9 @@ export function createWorkerBridge(): WorkerBridge {
 	// --- FFT data callback ---
 	let fftDataCallback: WorkerBridge['onFftData'] = null;
 
+	// --- Decoded data callback ---
+	let decodedDataCallback: WorkerBridge['onDecodedData'] = null;
+
 	// --- Helper to send config messages to DSP Worker ---
 	function postToDsp(msg: MainToDspMessage): void {
 		dspWorker.postMessage(msg);
@@ -128,6 +141,31 @@ export function createWorkerBridge(): WorkerBridge {
 				if (fftDataCallback) {
 					fftDataCallback(msg.bins, msg.binCount, msg.centerFrequency, msg.sampleRate);
 				}
+				break;
+			}
+
+			case 'decoded-commands': {
+				const commands: Gen2Command[] = msg.commands.map((cmd) => ({
+					...cmd,
+					roundId: 0,
+				}));
+				pushDecodedCommands(commands);
+				if (msg.roundUpdates.length > 0) {
+					pushRoundUpdates(msg.roundUpdates);
+				}
+				if (decodedDataCallback) {
+					decodedDataCallback(commands);
+				}
+				break;
+			}
+
+			case 'decode-stats': {
+				updateDecodeStats({
+					totalCommands: msg.totalCommands,
+					crcPassRate: msg.crcPassRate,
+					commandsPerSec: msg.commandsPerSec,
+					detectedTari: msg.detectedTari,
+				});
 				break;
 			}
 		}
@@ -159,12 +197,15 @@ export function createWorkerBridge(): WorkerBridge {
 		startCapture(): void {
 			postToUsb({ type: 'start-capture' });
 			sdrState.capturing = true;
+			setDecodeActive(true);
 		},
 
 		stopCapture(): void {
 			postToUsb({ type: 'stop-capture' });
 			sdrState.capturing = false;
 			resetStats();
+			resetDecodeState();
+			setDecodeActive(false);
 		},
 
 		destroy(): void {
@@ -178,6 +219,14 @@ export function createWorkerBridge(): WorkerBridge {
 
 		set onFftData(cb: WorkerBridge['onFftData']) {
 			fftDataCallback = cb;
+		},
+
+		get onDecodedData() {
+			return decodedDataCallback;
+		},
+
+		set onDecodedData(cb: WorkerBridge['onDecodedData']) {
+			decodedDataCallback = cb;
 		},
 
 		setFftSize(size: number): void {
