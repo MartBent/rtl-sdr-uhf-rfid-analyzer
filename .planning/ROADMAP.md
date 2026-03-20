@@ -12,8 +12,8 @@ This roadmap takes the project from an empty repository to a working browser-bas
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Hardware Connection** - SPA scaffold with WebUSB RTL-SDR connection, tuning controls, and worker threading architecture
-- [ ] **Phase 2: RF Visualization** - Live spectrum display and waterfall spectrogram showing RF activity in the UHF RFID band
+- [x] **Phase 1: Foundation & Hardware Connection** - SPA scaffold with WebUSB RTL-SDR connection, tuning controls, and worker threading architecture
+- [x] **Phase 2: RF Visualization** - Live spectrum display and waterfall spectrogram showing RF activity in the UHF RFID band (completed 2026-03-20)
 - [ ] **Phase 3: Protocol Decoding Engine** - PIE demodulation, EPC Gen2 command parsing, CRC validation, and adaptive Tari detection in WASM
 - [ ] **Phase 4: Timeline & Message View** - Live scrolling decoded message timeline with timestamps, color coding, filtering, and inter-command timing
 
@@ -47,8 +47,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- FFT data pipeline: pure DSP modules (window function, colormap, FFT processor), display state, DSP Worker integration, and worker bridge FFT routing
-- [ ] 02-02-PLAN.md -- Visualization UI: spectrum and waterfall Canvas 2D renderers, Svelte canvas components with rAF render loop, Display sidebar panel, and main page wiring
+- [x] 02-01-PLAN.md -- FFT data pipeline: pure DSP modules (window function, colormap, FFT processor), display state, DSP Worker integration, and worker bridge FFT routing
+- [x] 02-02-PLAN.md -- Visualization UI: spectrum and waterfall Canvas 2D renderers, Svelte canvas components with rAF render loop, Display sidebar panel, and main page wiring
 
 ### Phase 3: Protocol Decoding Engine
 **Goal**: The system can take raw IQ samples from the DSP pipeline and produce a stream of decoded EPC Gen2 reader commands with validated CRC, correct parameters, and raw bit representation
@@ -90,6 +90,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Hardware Connection | 3/3 | Complete | 2026-03-20 |
-| 2. RF Visualization | 0/2 | Planning | - |
+| 2. RF Visualization | 2/2 | Complete   | 2026-03-20 |
 | 3. Protocol Decoding Engine | 0/3 | Not started | - |
 | 4. Timeline & Message View | 0/2 | Not started | - |
