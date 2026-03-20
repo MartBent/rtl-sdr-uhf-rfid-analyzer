@@ -37,6 +37,7 @@ export class RtlDevice {
 		}
 
 		try {
+			await usbDevice.open();
 			const rtl = await RTL2832U.open(usbDevice);
 			return new RtlDevice(rtl);
 		} catch (err) {
