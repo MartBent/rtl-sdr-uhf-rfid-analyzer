@@ -94,4 +94,31 @@ describe('worker-bridge', () => {
 		expect(bridgeSrc).toContain('usbWorker.terminate()');
 		expect(bridgeSrc).toContain('dspWorker.terminate()');
 	});
+
+	// --- Phase 2: FFT data routing and config methods ---
+
+	it('imports MainToDspMessage type from worker-messages', () => {
+		expect(bridgeSrc).toContain('MainToDspMessage');
+	});
+
+	it('WorkerBridge interface contains onFftData property', () => {
+		expect(bridgeSrc).toContain('onFftData');
+	});
+
+	it('WorkerBridge interface contains setFftSize method', () => {
+		expect(bridgeSrc).toContain('setFftSize(size: number): void');
+	});
+
+	it('WorkerBridge interface contains setAveraging method', () => {
+		expect(bridgeSrc).toContain('setAveraging(alpha: number): void');
+	});
+
+	it('handles fft-data message from DSP Worker', () => {
+		expect(bridgeSrc).toContain("case 'fft-data':");
+		expect(bridgeSrc).toContain('fftDataCallback');
+	});
+
+	it('has postToDsp helper for sending config to DSP Worker', () => {
+		expect(bridgeSrc).toContain('function postToDsp(msg: MainToDspMessage)');
+	});
 });

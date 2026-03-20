@@ -15,8 +15,13 @@ export type UsbToDspMessage =
 	| { type: 'capture-started'; sampleRate: number; centerFrequency: number }
 	| { type: 'capture-stopped' };
 
+export type MainToDspMessage =
+	| { type: 'set-fft-size'; size: number }
+	| { type: 'set-averaging'; alpha: number };
+
 export type DspToMainMessage =
 	| { type: 'dsp-ready' }
-	| { type: 'dsp-stats'; samplesProcessed: number };
+	| { type: 'dsp-stats'; samplesProcessed: number }
+	| { type: 'fft-data'; bins: Float32Array; binCount: number; centerFrequency: number; sampleRate: number };
 
 export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';

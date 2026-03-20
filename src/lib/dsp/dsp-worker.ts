@@ -1,7 +1,8 @@
 /// <reference lib="webworker" />
 
-import type { UsbToDspMessage, DspToMainMessage } from '$lib/workers/worker-messages';
+import type { UsbToDspMessage, DspToMainMessage, MainToDspMessage } from '$lib/workers/worker-messages';
 import { getRingBufferReader } from './ring-buffer';
+import { FftProcessor } from './fft-processor';
 import { STATS_REPORT_INTERVAL_MS } from '$lib/usb/usb-types';
 import type { RingBuffer } from 'ringbuf.js';
 
@@ -11,6 +12,16 @@ declare const self: DedicatedWorkerGlobalScope;
 let ringReader: RingBuffer | null = null;
 let polling = false;
 let pollTimer: ReturnType<typeof setTimeout> | null = null;
+
+// --- FFT processing state ---
+let fftProcessor: FftProcessor | null = null;
+let currentSampleRate = 0;
+let currentCenterFrequency = 0;
+let currentFftSize = 1024;
+
+/** Staging buffer for accumulating IQ bytes until we have fftSize samples. */
+let stagingBuffer = new Uint8Array(2048 * 2); // max FFT size * 2 bytes per sample
+let stagingOffset = 0;
 
 // --- Stats ---
 let totalSamplesProcessed = 0;
@@ -25,14 +36,17 @@ const READ_BUFFER = new Uint8Array(16384);
 /**
  * Post a typed message to the main thread.
  */
-function postToMain(msg: DspToMainMessage): void {
-	self.postMessage(msg);
+function postToMain(msg: DspToMainMessage, transfer?: Transferable[]): void {
+	if (transfer) {
+		self.postMessage(msg, transfer);
+	} else {
+		self.postMessage(msg);
+	}
 }
 
 /**
  * Poll the ring buffer for available IQ data.
- * In Phase 1, this is a skeleton: data is read and discarded.
- * Phase 2 will add FFT processing; Phase 3 will add demodulation.
+ * Reads IQ data, accumulates in staging buffer, and runs FFT when enough samples collected.
  */
 function pollRingBuffer(): void {
 	if (!polling || !ringReader) return;
@@ -42,7 +56,14 @@ function pollRingBuffer(): void {
 	let read: number;
 	do {
 		read = ringReader.pop(READ_BUFFER);
-		totalRead += read;
+		if (read > 0) {
+			totalRead += read;
+
+			// Process FFT if processor is available
+			if (fftProcessor) {
+				processFftData(READ_BUFFER, read);
+			}
+		}
 	} while (read === READ_BUFFER.length);
 
 	if (totalRead > 0) {
@@ -67,6 +88,52 @@ function pollRingBuffer(): void {
 }
 
 /**
+ * Accumulate IQ bytes in staging buffer and run FFT when we have fftSize samples.
+ */
+function processFftData(buffer: Uint8Array, bytesRead: number): void {
+	if (!fftProcessor) return;
+
+	const bytesPerBlock = currentFftSize * 2; // 2 bytes per IQ sample
+	let bufferPos = 0;
+
+	while (bufferPos < bytesRead) {
+		// How many bytes we still need to fill the staging buffer
+		const needed = bytesPerBlock - stagingOffset;
+		const available = bytesRead - bufferPos;
+		const toCopy = Math.min(needed, available);
+
+		// Copy into staging buffer
+		stagingBuffer.set(
+			buffer.subarray(bufferPos, bufferPos + toCopy),
+			stagingOffset,
+		);
+		stagingOffset += toCopy;
+		bufferPos += toCopy;
+
+		// If staging buffer is full, run FFT
+		if (stagingOffset >= bytesPerBlock) {
+			const spectrum = fftProcessor.process(stagingBuffer, 0, currentFftSize);
+
+			// Copy result for transferable postMessage
+			const spectrumCopy = new Float32Array(spectrum.length);
+			spectrumCopy.set(spectrum);
+			postToMain(
+				{
+					type: 'fft-data',
+					bins: spectrumCopy,
+					binCount: currentFftSize,
+					centerFrequency: currentCenterFrequency,
+					sampleRate: currentSampleRate,
+				},
+				[spectrumCopy.buffer],
+			);
+
+			stagingOffset = 0;
+		}
+	}
+}
+
+/**
  * Start the polling loop.
  */
 function startPolling(): void {
@@ -74,6 +141,7 @@ function startPolling(): void {
 	polling = true;
 	totalSamplesProcessed = 0;
 	lastStatsReport = 0;
+	stagingOffset = 0;
 	pollRingBuffer();
 }
 
@@ -99,12 +167,43 @@ function handleDspMessage(msg: UsbToDspMessage): void {
 		}
 
 		case 'capture-started': {
+			currentSampleRate = msg.sampleRate;
+			currentCenterFrequency = msg.centerFrequency;
+			fftProcessor = new FftProcessor(currentFftSize, 0.3);
+			stagingOffset = 0;
 			startPolling();
 			break;
 		}
 
 		case 'capture-stopped': {
 			stopPolling();
+			if (fftProcessor) {
+				fftProcessor.dispose();
+				fftProcessor = null;
+			}
+			break;
+		}
+	}
+}
+
+/**
+ * Handle config messages from the main thread (via bridge).
+ */
+function handleMainMessage(msg: MainToDspMessage): void {
+	switch (msg.type) {
+		case 'set-fft-size': {
+			currentFftSize = msg.size;
+			stagingOffset = 0;
+			if (fftProcessor) {
+				fftProcessor.updateConfig({ fftSize: msg.size });
+			}
+			break;
+		}
+
+		case 'set-averaging': {
+			if (fftProcessor) {
+				fftProcessor.updateConfig({ alpha: msg.alpha });
+			}
 			break;
 		}
 	}
@@ -119,6 +218,9 @@ self.addEventListener('message', (event: MessageEvent) => {
 		const port = event.ports[0];
 		port.onmessage = (e: MessageEvent) => handleDspMessage(e.data);
 		port.start();
+	} else if (msg?.type === 'set-fft-size' || msg?.type === 'set-averaging') {
+		// Handle config messages from main thread
+		handleMainMessage(msg as MainToDspMessage);
 	} else if (msg?.type) {
 		// Handle messages sent directly (e.g., from bridge for init)
 		handleDspMessage(msg);

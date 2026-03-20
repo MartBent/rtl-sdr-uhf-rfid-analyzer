@@ -2,6 +2,7 @@ import type {
 	MainToUsbMessage,
 	UsbToMainMessage,
 	DspToMainMessage,
+	MainToDspMessage,
 	ConnectionStatus,
 } from './worker-messages';
 import { sdrState } from '$lib/state/sdr-state.svelte';
@@ -26,6 +27,12 @@ export interface WorkerBridge {
 	stopCapture(): void;
 	/** Terminate both workers and clean up. */
 	destroy(): void;
+	/** Set callback for FFT data from DSP Worker. */
+	onFftData: ((bins: Float32Array, binCount: number, centerFrequency: number, sampleRate: number) => void) | null;
+	/** Send FFT size change to DSP Worker. */
+	setFftSize(size: number): void;
+	/** Send averaging alpha change to DSP Worker. */
+	setAveraging(alpha: number): void;
 }
 
 /**
@@ -94,6 +101,14 @@ export function createWorkerBridge(): WorkerBridge {
 		sdrState.errorMessage = `USB Worker error: ${event.message}`;
 	};
 
+	// --- FFT data callback ---
+	let fftDataCallback: WorkerBridge['onFftData'] = null;
+
+	// --- Helper to send config messages to DSP Worker ---
+	function postToDsp(msg: MainToDspMessage): void {
+		dspWorker.postMessage(msg);
+	}
+
 	// --- Route DSP Worker messages ---
 	dspWorker.onmessage = (event: MessageEvent<DspToMainMessage>) => {
 		const msg = event.data;
@@ -106,6 +121,13 @@ export function createWorkerBridge(): WorkerBridge {
 
 			case 'dsp-stats': {
 				console.log(`[DSP Worker] Processed: ${msg.samplesProcessed} samples`);
+				break;
+			}
+
+			case 'fft-data': {
+				if (fftDataCallback) {
+					fftDataCallback(msg.bins, msg.binCount, msg.centerFrequency, msg.sampleRate);
+				}
 				break;
 			}
 		}
@@ -147,6 +169,22 @@ export function createWorkerBridge(): WorkerBridge {
 		destroy(): void {
 			usbWorker.terminate();
 			dspWorker.terminate();
+		},
+
+		get onFftData() {
+			return fftDataCallback;
+		},
+
+		set onFftData(cb: WorkerBridge['onFftData']) {
+			fftDataCallback = cb;
+		},
+
+		setFftSize(size: number): void {
+			postToDsp({ type: 'set-fft-size', size });
+		},
+
+		setAveraging(alpha: number): void {
+			postToDsp({ type: 'set-averaging', alpha });
 		},
 	};
 }
