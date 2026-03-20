@@ -9,7 +9,8 @@
 	import DisplayPanel from '$lib/components/DisplayPanel.svelte';
 	import SpectrumCanvas from '$lib/components/SpectrumCanvas.svelte';
 	import WaterfallCanvas from '$lib/components/WaterfallCanvas.svelte';
-	import PlaceholderPanel from '$lib/components/PlaceholderPanel.svelte';
+	import DecodedOutputPanel from '$lib/components/DecodedOutputPanel.svelte';
+	import DecodeControlsPanel from '$lib/components/DecodeControlsPanel.svelte';
 
 	let unsupportedMessage = $state<string | null>(null);
 	let bridge = $state<WorkerBridge | null>(null);
@@ -51,13 +52,14 @@
 			<TuningPanel {bridge} />
 			<CaptureControls {bridge} />
 			<DisplayPanel {bridge} />
+			<DecodeControlsPanel />
 		</aside>
 
 		<!-- Main content area -->
 		<main class="flex flex-1 flex-col gap-3 p-3">
 			<SpectrumCanvas fftData={latestFftData} />
 			<WaterfallCanvas fftData={latestFftData} />
-			<PlaceholderPanel title="Timeline (Phase 4)" />
+			<DecodedOutputPanel />
 		</main>
 	</div>
 {:else}
