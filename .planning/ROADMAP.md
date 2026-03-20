@@ -60,12 +60,14 @@ Plans:
   3. System validates CRC-16 on decoded frames and shows pass/fail status on each command
   4. System displays raw bits/symbols alongside each decoded command so engineers can verify decode correctness
   5. System groups decoded commands into inventory rounds (Query through ACK sequences) and attempts experimental FM0/Miller backscatter decoding where signal strength allows (clearly marked as experimental)
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md -- TypeScript protocol layer: Gen2 types, CRC-5/CRC-16 validation, Gen2 command parser (all 7 types), frame-sync with adaptive Tari detection
+- [ ] 03-02-PLAN.md -- WASM PIE demodulator: C/Emscripten envelope detector with noise gate, Makefile build system, DemodProcessor TypeScript wrapper
+- [ ] 03-03-PLAN.md -- Inventory round tracker, experimental FM0 backscatter decoder, decode state ring buffer with statistics
+- [ ] 03-04-PLAN.md -- DSP Worker dual-path integration (FFT + demod), worker message types extension, worker bridge decoded data routing
+- [ ] 03-05-PLAN.md -- Decoded output panel UI, command row component, decode controls sidebar, page wiring, human verification
 
 ### Phase 4: Timeline & Message View
 **Goal**: Engineers see decoded RFID protocol messages in a live scrolling timeline that makes it easy to understand reader behavior, timing patterns, and command sequences at a glance
@@ -91,5 +93,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation & Hardware Connection | 3/3 | Complete | 2026-03-20 |
 | 2. RF Visualization | 2/2 | Complete   | 2026-03-20 |
-| 3. Protocol Decoding Engine | 0/3 | Not started | - |
+| 3. Protocol Decoding Engine | 0/5 | Not started | - |
 | 4. Timeline & Message View | 0/2 | Not started | - |
