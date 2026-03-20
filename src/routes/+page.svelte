@@ -6,10 +6,19 @@
 	import ConnectionPanel from '$lib/components/ConnectionPanel.svelte';
 	import TuningPanel from '$lib/components/TuningPanel.svelte';
 	import CaptureControls from '$lib/components/CaptureControls.svelte';
+	import DisplayPanel from '$lib/components/DisplayPanel.svelte';
+	import SpectrumCanvas from '$lib/components/SpectrumCanvas.svelte';
+	import WaterfallCanvas from '$lib/components/WaterfallCanvas.svelte';
 	import PlaceholderPanel from '$lib/components/PlaceholderPanel.svelte';
 
 	let unsupportedMessage = $state<string | null>(null);
 	let bridge = $state<WorkerBridge | null>(null);
+	let latestFftData = $state<{
+		bins: Float32Array;
+		binCount: number;
+		centerFreq: number;
+		sampleRate: number;
+	} | null>(null);
 
 	onMount(() => {
 		const features = detectFeatures();
@@ -21,6 +30,10 @@
 		}
 
 		bridge = createWorkerBridge();
+
+		bridge.onFftData = (bins, binCount, centerFreq, sampleRate) => {
+			latestFftData = { bins, binCount, centerFreq, sampleRate };
+		};
 
 		return () => {
 			bridge?.destroy();
@@ -37,12 +50,13 @@
 			<ConnectionPanel {bridge} />
 			<TuningPanel {bridge} />
 			<CaptureControls {bridge} />
+			<DisplayPanel {bridge} />
 		</aside>
 
 		<!-- Main content area -->
 		<main class="flex flex-1 flex-col gap-3 p-3">
-			<PlaceholderPanel title="Spectrum (Phase 2)" />
-			<PlaceholderPanel title="Waterfall (Phase 2)" />
+			<SpectrumCanvas fftData={latestFftData} />
+			<WaterfallCanvas fftData={latestFftData} />
 			<PlaceholderPanel title="Timeline (Phase 4)" />
 		</main>
 	</div>
