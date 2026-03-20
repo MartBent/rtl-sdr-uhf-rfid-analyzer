@@ -31,7 +31,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Protocol Decoding
 
-- [ ] **DEC-01**: System demodulates EPC Gen2 PIE-encoded reader commands from raw IQ samples
+- [x] **DEC-01**: System demodulates EPC Gen2 PIE-encoded reader commands from raw IQ samples
 - [ ] **DEC-02**: System decodes Query command with parameters (DR, M, TRext, Sel, Session, Target, Q)
 - [ ] **DEC-03**: System decodes QueryRep command with session parameter
 - [ ] **DEC-04**: System decodes QueryAdjust command with session and up/down parameters
@@ -113,7 +113,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VIS-03 | Phase 2 | Complete |
 | VIS-04 | Phase 2 | Complete |
 | VIS-05 | Phase 2 | Complete |
-| DEC-01 | Phase 3 | Pending |
+| DEC-01 | Phase 3 | Complete |
 | DEC-02 | Phase 3 | Pending |
 | DEC-03 | Phase 3 | Pending |
 | DEC-04 | Phase 3 | Pending |
