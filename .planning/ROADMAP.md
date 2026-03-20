@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Hardware Connection** - SPA scaffold with WebUSB RTL-SDR connection, tuning controls, and worker threading architecture
 - [x] **Phase 2: RF Visualization** - Live spectrum display and waterfall spectrogram showing RF activity in the UHF RFID band (completed 2026-03-20)
-- [ ] **Phase 3: Protocol Decoding Engine** - PIE demodulation, EPC Gen2 command parsing, CRC validation, and adaptive Tari detection in WASM
+- [x] **Phase 3: Protocol Decoding Engine** - PIE demodulation, EPC Gen2 command parsing, CRC validation, and adaptive Tari detection in WASM (completed 2026-03-20)
 - [ ] **Phase 4: Timeline & Message View** - Live scrolling decoded message timeline with timestamps, color coding, filtering, and inter-command timing
 
 ## Phase Details
@@ -93,5 +93,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation & Hardware Connection | 3/3 | Complete | 2026-03-20 |
 | 2. RF Visualization | 2/2 | Complete   | 2026-03-20 |
-| 3. Protocol Decoding Engine | 0/5 | Not started | - |
+| 3. Protocol Decoding Engine | 5/5 | Complete   | 2026-03-20 |
 | 4. Timeline & Message View | 0/2 | Not started | - |
