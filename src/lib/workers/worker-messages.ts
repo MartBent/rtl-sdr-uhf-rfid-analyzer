@@ -1,3 +1,5 @@
+import type { DecodedCommandMsg, RoundUpdate } from '$lib/protocol/gen2-types';
+
 export type MainToUsbMessage =
 	| { type: 'connect' }
 	| { type: 'disconnect' }
@@ -23,6 +25,14 @@ export type MainToDspMessage =
 export type DspToMainMessage =
 	| { type: 'dsp-ready' }
 	| { type: 'dsp-stats'; samplesProcessed: number }
-	| { type: 'fft-data'; bins: Float32Array; binCount: number; centerFrequency: number; sampleRate: number };
+	| { type: 'fft-data'; bins: Float32Array; binCount: number; centerFrequency: number; sampleRate: number }
+	| { type: 'decoded-commands'; commands: DecodedCommandMsg[]; roundUpdates: RoundUpdate[] }
+	| {
+			type: 'decode-stats';
+			totalCommands: number;
+			crcPassRate: number;
+			commandsPerSec: number;
+			detectedTari: number;
+	  };
 
 export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
