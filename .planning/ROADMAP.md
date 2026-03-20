@@ -32,9 +32,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Scaffold SvelteKit SPA, install dependencies, configure COOP/COEP headers, create types/config/state modules and unit tests
-- [ ] 01-02-PLAN.md -- Build USB Worker with RTL-SDR device wrapper, DSP Worker skeleton, SharedArrayBuffer ring buffer, and worker bridge
-- [ ] 01-03-PLAN.md -- Build complete UI (status bar, connection controls, tuning panel, capture controls, placeholder panels) and human verification
+- [x] 01-01-PLAN.md -- Scaffold SvelteKit SPA, install dependencies, configure COOP/COEP headers, create types/config/state modules and unit tests
+- [x] 01-02-PLAN.md -- Build USB Worker with RTL-SDR device wrapper, DSP Worker skeleton, SharedArrayBuffer ring buffer, and worker bridge
+- [x] 01-03-PLAN.md -- Build complete UI (status bar, connection controls, tuning panel, capture controls, placeholder panels) and human verification
 
 ### Phase 2: RF Visualization
 **Goal**: Engineers can see live RF activity in the UHF RFID band as both a spectrum display and a scrolling waterfall, visually confirming that their hardware is working and RFID reader transmissions are present
@@ -44,11 +44,11 @@ Plans:
   1. User sees a live spectrum (FFT) plot that updates in real-time showing signal power across the tuned bandwidth
   2. User sees a live waterfall spectrogram scrolling over time with color-mapped signal strength, clearly showing RFID reader transmission bursts
   3. User can adjust FFT size (256/512/1024/2048) and spectrum averaging, and see the display respond accordingly
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md -- FFT data pipeline: pure DSP modules (window function, colormap, FFT processor), display state, DSP Worker integration, and worker bridge FFT routing
+- [ ] 02-02-PLAN.md -- Visualization UI: spectrum and waterfall Canvas 2D renderers, Svelte canvas components with rAF render loop, Display sidebar panel, and main page wiring
 
 ### Phase 3: Protocol Decoding Engine
 **Goal**: The system can take raw IQ samples from the DSP pipeline and produce a stream of decoded EPC Gen2 reader commands with validated CRC, correct parameters, and raw bit representation
@@ -89,7 +89,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Hardware Connection | 0/3 | Not started | - |
-| 2. RF Visualization | 0/2 | Not started | - |
+| 1. Foundation & Hardware Connection | 3/3 | Complete | 2026-03-20 |
+| 2. RF Visualization | 0/2 | Planning | - |
 | 3. Protocol Decoding Engine | 0/3 | Not started | - |
 | 4. Timeline & Message View | 0/2 | Not started | - |
