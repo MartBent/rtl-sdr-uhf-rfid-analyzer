@@ -253,7 +253,7 @@ describe('gen2-decoder', () => {
 				1, 0, 0, // target = 4
 				0, 0, 0, // action = 0
 				0, 1, // memBank = 1
-				0, 0, 0, 0, 0, 0, 0, // pointer EBV (MSB=0, value=0)
+				0, 0, 0, 0, 0, 0, 0, 0, // pointer EBV (MSB=0, 7 value bits=0000000, value=0)
 				0, 0, 0, 0, 0, 0, 0, 0, // length = 0
 				// no mask bits
 				0, // truncate = false
@@ -282,7 +282,7 @@ describe('gen2-decoder', () => {
 				0, 1, 0, // target = 2
 				1, 0, 1, // action = 5
 				1, 0, // memBank = 2
-				0, 0, 1, 0, 0, 0, 0, // pointer EBV (MSB=0, value=0x20=32)
+				0, 0, 1, 0, 0, 0, 0, 0, // pointer EBV (MSB=0, 7 value bits=0100000, value=32)
 				0, 0, 0, 1, 0, 0, 0, 0, // length = 16
 				...maskBits,
 				1, // truncate = true
@@ -310,7 +310,7 @@ describe('gen2-decoder', () => {
 				0, 0, 0, // target = 0
 				0, 0, 0, // action = 0
 				0, 0, // memBank = 0
-				0, 0, 0, 0, 0, 0, 0, // pointer EBV (value=0)
+				0, 0, 0, 0, 0, 0, 0, 0, // pointer EBV (MSB=0, value=0)
 				0, 0, 1, 0, 0, 0, 0, 0, // length = 32
 				...maskBits,
 				0, // truncate = false
@@ -329,10 +329,13 @@ describe('gen2-decoder', () => {
 
 		it('reports CRC failure on corrupted Select', () => {
 			const dataBits = [
-				1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1,
-				0, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 0, 0, 0, 0, 0,
-				0,
+				1, 0, 1, 1, // code
+				0, 0, 0, // target
+				0, 0, 0, // action
+				0, 1, // memBank
+				0, 0, 0, 0, 0, 0, 0, 0, // pointer EBV (8 bits)
+				0, 0, 0, 0, 0, 0, 0, 0, // length = 0
+				0, // truncate
 			];
 			const fullBits = appendCrc16(dataBits);
 			const corrupted = [...fullBits];
@@ -344,15 +347,16 @@ describe('gen2-decoder', () => {
 		});
 
 		it('handles Select with multi-byte EBV pointer', () => {
-			// EBV with 2 bytes: first byte MSB=1 (more), second byte MSB=0 (last)
+			// EBV with 2 octets: first octet MSB=1 (more), second octet MSB=0 (last)
 			// 1_0000001 0_0000010 = value (0x01 << 7) | 0x02 = 130
+			// Each octet is 8 bits: 1 continuation + 7 value
 			const dataBits = [
 				1, 0, 1, 1, // code
 				0, 0, 0, // target = 0
 				0, 0, 0, // action = 0
 				0, 0, // memBank = 0
-				1, 0, 0, 0, 0, 0, 1, // EBV byte 1 (MSB=1, value bits=0000001)
-				0, 0, 0, 0, 0, 0, 1, 0, // EBV byte 2 (MSB=0, value bits=0000010)
+				1, 0, 0, 0, 0, 0, 0, 1, // EBV octet 1 (MSB=1, 7 value bits=0000001, value=1)
+				0, 0, 0, 0, 0, 0, 1, 0, // EBV octet 2 (MSB=0, 7 value bits=0000010, value=2)
 				0, 0, 0, 0, 0, 0, 0, 0, // length = 0
 				0, // truncate = false
 			];
@@ -441,8 +445,8 @@ describe('gen2-decoder', () => {
 			const nakBits = [1, 1, 0, 0, 0, 0, 0, 0];
 			expect(decodeCommand(nakBits).rawBits).toEqual(nakBits);
 
-			// Select
-			const selectData = [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+			// Select (code(4) + target(3) + action(3) + memBank(2) + pointer_EBV(8) + length(8) + truncate(1) = 29 bits)
+			const selectData = [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 			const selectBits = appendCrc16(selectData);
 			expect(decodeCommand(selectBits).rawBits).toEqual(selectBits);
 
