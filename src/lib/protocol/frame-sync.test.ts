@@ -75,6 +75,7 @@ describe('FrameSyncDetector', () => {
 		const DATA1_25US = 90; // 1.5x Tari
 		const RTCAL_25US = TARI_25US + DATA1_25US; // 150 samples
 		const DELIMITER_25 = 30; // Delimiter is always 12.5us
+		const TRCAL_25US = 240; // TRcal must be > RTcal for preamble detection
 
 		it('detects preamble with larger Tari and correct timing', () => {
 			const detector = new FrameSyncDetector(SAMPLE_RATE);
@@ -83,7 +84,7 @@ describe('FrameSyncDetector', () => {
 				makeSymbol('pulse-low', 0, DELIMITER_25),
 				makeSymbol('pulse-high', DELIMITER_25, TARI_25US),
 				makeSymbol('pulse-low', DELIMITER_25 + TARI_25US, RTCAL_25US),
-				makeSymbol('pulse-high', DELIMITER_25 + TARI_25US + RTCAL_25US, TRCAL),
+				makeSymbol('pulse-high', DELIMITER_25 + TARI_25US + RTCAL_25US, TRCAL_25US),
 			];
 
 			const result = detector.processSymbols(symbols);
