@@ -1,8 +1,12 @@
 /**
- * Decode State - Ring buffer and statistics for decoded EPC Gen2 commands.
+ * Decode State - Decoded command ring buffer and statistics
  *
- * Follows the established Svelte 5 $state pattern (see sdr-state.svelte.ts).
- * Ring buffer uses array slice(-MAX) for bounded capacity with Svelte reactivity.
+ * Manages the state for decoded EPC Gen2 commands, backscatter results,
+ * inventory round updates, and decode statistics. Uses a ring buffer pattern
+ * (array slice) to prevent unbounded growth during long capture sessions.
+ *
+ * Follows the established Svelte 5 $state pattern from sdr-state.svelte.ts
+ * and display-state.svelte.ts.
  */
 
 import type { Gen2Command, RoundUpdate, BackscatterResult } from '$lib/protocol/gen2-types';
@@ -12,6 +16,9 @@ const MAX_COMMANDS = 5000;
 
 /** Maximum backscatter results kept. */
 const MAX_BACKSCATTER = 1000;
+
+/** Maximum round updates kept. */
+const MAX_ROUNDS = 500;
 
 export const decodeState = $state({
 	/** Ring buffer of decoded commands (newest at end). */
@@ -28,9 +35,8 @@ export const decodeState = $state({
 		totalCommands: 0,
 		crcChecked: 0,
 		crcPassed: 0,
-		crcPassRate: 0,
 		commandsPerSec: 0,
-		detectedTari: 0,
+		detectedTari: 0, // in microseconds
 	},
 
 	/** Whether backscatter display is enabled (off by default per CONTEXT.md). */
@@ -49,17 +55,19 @@ export function pushDecodedCommands(commands: Gen2Command[]): void {
 }
 
 /**
- * Push backscatter results.
+ * Push backscatter results into the ring buffer.
+ * Trims to MAX_BACKSCATTER capacity.
  */
 export function pushBackscatterResults(results: BackscatterResult[]): void {
 	decodeState.backscatter = [...decodeState.backscatter, ...results].slice(-MAX_BACKSCATTER);
 }
 
 /**
- * Update round tracking info.
+ * Push round tracking updates.
+ * Trims to MAX_ROUNDS capacity.
  */
 export function pushRoundUpdates(updates: RoundUpdate[]): void {
-	decodeState.rounds = [...decodeState.rounds, ...updates].slice(-500);
+	decodeState.rounds = [...decodeState.rounds, ...updates].slice(-MAX_ROUNDS);
 }
 
 /**
@@ -72,7 +80,7 @@ export function updateDecodeStats(stats: {
 	detectedTari: number;
 }): void {
 	decodeState.stats.totalCommands = stats.totalCommands;
-	decodeState.stats.crcPassRate = stats.crcPassRate;
+	decodeState.stats.crcPassed = Math.round(stats.crcPassRate * decodeState.stats.crcChecked);
 	decodeState.stats.commandsPerSec = stats.commandsPerSec;
 	decodeState.stats.detectedTari = stats.detectedTari;
 }
@@ -101,7 +109,6 @@ export function resetDecodeState(): void {
 	decodeState.stats.totalCommands = 0;
 	decodeState.stats.crcChecked = 0;
 	decodeState.stats.crcPassed = 0;
-	decodeState.stats.crcPassRate = 0;
 	decodeState.stats.commandsPerSec = 0;
 	decodeState.stats.detectedTari = 0;
 	decodeState.active = false;
