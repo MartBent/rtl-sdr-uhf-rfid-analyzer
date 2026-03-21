@@ -5,6 +5,7 @@
 
 <header class="flex items-center gap-4 border-b border-gray-700 bg-gray-900 px-4 py-2 text-xs">
 	<span class="font-semibold text-gray-300">UHF RFID Analyzer</span>
+	<span class="text-gray-500">{__APP_VERSION__}</span>
 
 	<div class="mx-2 h-4 w-px bg-gray-700"></div>
 
