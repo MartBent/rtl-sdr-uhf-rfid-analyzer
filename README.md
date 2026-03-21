@@ -73,6 +73,22 @@ RTL-SDR (USB) ──► USB Worker ──► SharedArrayBuffer Ring Buffer ─�
 - [Vite](https://vite.dev/) 8 — Build tool with WASM and top-level await support
 - [Vitest](https://vitest.dev/) — Testing
 
+## Deployment
+
+The project uses GitHub Actions to build a Docker image and push it to GitHub Container Registry on every push to `main`.
+
+### Running with Docker
+
+```bash
+docker run -d -p 8080:80 ghcr.io/martbent/rtl-sdr-uhf-rfid-analyzer:latest
+```
+
+Open http://localhost:8080 in Chrome or Edge.
+
+### Automatic updates with Watchtower
+
+If you run [Watchtower](https://containrrr.dev/watchtower/) on your server, it will automatically detect new images and restart the container with zero downtime.
+
 ## Development
 
 ```bash
