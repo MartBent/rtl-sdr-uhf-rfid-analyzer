@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { decodeState } from '$lib/state/decode-state.svelte';
+	import { decodeState, clearCommandTimeline } from '$lib/state/decode-state.svelte';
 	import DecodedCommandRow from './DecodedCommandRow.svelte';
 
 	// Group commands by roundId for visual separation
@@ -66,6 +66,15 @@
 			<span>{decodeState.stats.totalCommands} cmds</span>
 			<span>CRC: {crcPassRate}%</span>
 			<span>{decodeState.stats.commandsPerSec.toFixed(0)} cmd/s</span>
+			{#if decodeState.commands.length > 0}
+				<button
+					onclick={clearCommandTimeline}
+					class="rounded px-1.5 py-0.5 text-gray-500 hover:bg-gray-800 hover:text-gray-300"
+					title="Clear commands timeline"
+				>
+					Clear
+				</button>
+			{/if}
 		</div>
 	</div>
 

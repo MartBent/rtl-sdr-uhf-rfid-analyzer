@@ -90,6 +90,7 @@ export interface FrameSyncResult {
 	blf?: number; // Backscatter Link Frequency (only in preamble, from TRcal)
 	sampleOffset: number; // where the sync was detected
 	dataStartIndex: number; // index into symbol array where data bits begin
+	dataSymbols?: DemodSymbol[]; // data symbols following this sync (populated by streaming scanner)
 }
 
 // Backscatter decode result (experimental)

@@ -102,6 +102,31 @@ function matchPrefix(bits: number[], prefix: number[]): boolean {
 	return true;
 }
 
+// --- Bit count validation ---
+
+/** Expected bit counts per command type. Tuple = [min, max] for variable-length. */
+const EXPECTED_BIT_COUNTS: Record<Gen2CommandType, number | [number, number]> = {
+	Query: 22,
+	QueryRep: 4,
+	QueryAdjust: 9,
+	ACK: 18,
+	NAK: 8,
+	ReqRN: 40,
+	Select: [29, 500], // variable: min 29 (code+fields+CRC16, mask=0), max reasonable
+	Unknown: [0, Infinity],
+};
+
+/**
+ * Check if a bit count is valid for the given command type.
+ */
+function validateBitCount(type: Gen2CommandType, bitCount: number): boolean {
+	const expected = EXPECTED_BIT_COUNTS[type];
+	if (Array.isArray(expected)) {
+		return bitCount >= expected[0] && bitCount <= expected[1];
+	}
+	return bitCount === expected;
+}
+
 // --- Command identification ---
 
 /**
@@ -254,6 +279,14 @@ export function decodeCommand(
 ): Gen2Command {
 	const type = identifyCommand(bits);
 	const timestamp = sampleRate > 0 ? (sampleOffset / sampleRate) * 1000 : 0;
+
+	// Reject if bit count doesn't match expected length for identified type
+	if (type !== 'Unknown' && !validateBitCount(type, bits.length)) {
+		const cmd = decodeUnknown(bits);
+		cmd.sampleOffset = sampleOffset;
+		cmd.timestamp = timestamp;
+		return cmd;
+	}
 
 	let cmd: Gen2Command;
 

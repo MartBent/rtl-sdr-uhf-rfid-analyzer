@@ -457,6 +457,67 @@ describe('gen2-decoder', () => {
 		});
 	});
 
+	describe('bit count validation', () => {
+		it('rejects Query with wrong bit count (15 bits) as Unknown', () => {
+			// Query prefix (1000) but only 15 bits instead of 22
+			const bits = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+			const cmd = decodeCommand(bits);
+			expect(cmd.type).toBe('Unknown');
+		});
+
+		it('rejects QueryRep with wrong bit count (6 bits) as Unknown', () => {
+			// QueryRep prefix (00) but 6 bits instead of 4
+			const bits = [0, 0, 0, 0, 1, 1];
+			const cmd = decodeCommand(bits);
+			expect(cmd.type).toBe('Unknown');
+		});
+
+		it('rejects ACK with wrong bit count (10 bits) as Unknown', () => {
+			// ACK prefix (01) but 10 bits instead of 18
+			const bits = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+			const cmd = decodeCommand(bits);
+			expect(cmd.type).toBe('Unknown');
+		});
+
+		it('rejects NAK with wrong bit count (10 bits) as Unknown', () => {
+			// NAK prefix (11000000) but 10 bits instead of 8
+			const bits = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+			const cmd = decodeCommand(bits);
+			expect(cmd.type).toBe('Unknown');
+		});
+
+		it('rejects QueryAdjust with wrong bit count (12 bits) as Unknown', () => {
+			// QueryAdjust prefix (1001) but 12 bits instead of 9
+			const bits = [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+			const cmd = decodeCommand(bits);
+			expect(cmd.type).toBe('Unknown');
+		});
+
+		it('rejects ReqRN with wrong bit count (30 bits) as Unknown', () => {
+			// ReqRN prefix (11000001) but 30 bits instead of 40
+			const bits = [1, 1, 0, 0, 0, 0, 0, 1, ...new Array(22).fill(0)];
+			const cmd = decodeCommand(bits);
+			expect(cmd.type).toBe('Unknown');
+		});
+
+		it('still decodes Query with correct bit count (22)', () => {
+			const dataBits = [
+				1, 0, 0, 0, // code
+				0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,
+			];
+			const fullBits = appendCrc5(dataBits);
+			expect(fullBits.length).toBe(22);
+			const cmd = decodeCommand(fullBits);
+			expect(cmd.type).toBe('Query');
+		});
+
+		it('still decodes QueryRep with correct bit count (4)', () => {
+			const bits = [0, 0, 0, 0];
+			const cmd = decodeCommand(bits);
+			expect(cmd.type).toBe('QueryRep');
+		});
+	});
+
 	describe('sampleOffset and timestamp', () => {
 		it('sets sampleOffset and timestamp from parameters', () => {
 			const bits = [0, 0, 0, 0]; // QueryRep

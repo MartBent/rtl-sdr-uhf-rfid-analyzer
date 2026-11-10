@@ -54,7 +54,7 @@ function createMockWasmModule() {
 		): number {
 			const sampleCount = byteCount / 2;
 			let symbolCount = 0;
-			const noiseAlpha = 0.001;
+			const noiseAlpha = 0.01;
 
 			for (let i = 0; i < sampleCount; i++) {
 				const iVal = (HEAPU8[inputPtr + i * 2] - 127.5) / 127.5;

@@ -53,7 +53,7 @@ int demod_process(
 ) {
     int sample_count = byte_count / 2;
     int symbol_count = 0;
-    const float noise_alpha = 0.001f;
+    const float noise_alpha = 0.01f;
 
     (void)sample_rate; /* Reserved for future use */
 

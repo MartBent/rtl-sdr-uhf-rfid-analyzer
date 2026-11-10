@@ -100,6 +100,15 @@ export function setDecodeActive(active: boolean): void {
 }
 
 /**
+ * Clear the commands timeline (commands, backscatter, rounds) without resetting stats or active state.
+ */
+export function clearCommandTimeline(): void {
+	decodeState.commands = [];
+	decodeState.backscatter = [];
+	decodeState.rounds = [];
+}
+
+/**
  * Reset all decode state (on capture stop or new session).
  */
 export function resetDecodeState(): void {

@@ -42,6 +42,16 @@ let lastDecodeStatsReport = 0;
 let lastDecodeCommandsSend = 0;
 const DECODE_BATCH_INTERVAL_MS = 100; // send decoded commands every 100ms
 
+// --- Debug counters for noise rejection pipeline ---
+let dbgSymbolChunks = 0;
+let dbgSyncsFound = 0;
+let dbgTooFewBits = 0;
+let dbgCrcRejected = 0;
+let dbgBitCountRejected = 0;
+let dbgCommandsPassed = 0;
+let dbgLastReport = 0;
+const DBG_REPORT_INTERVAL_MS = 2000;
+
 // --- Stats ---
 let totalSamplesProcessed = 0;
 let lastStatsReport = 0;
@@ -112,7 +122,7 @@ function pollRingBuffer(): void {
 				totalCommands: decodeStatsTotal,
 				crcPassRate: decodeStatsCrcChecked > 0 ? decodeStatsCrcPassed / decodeStatsCrcChecked : 1,
 				commandsPerSec: elapsed > 0 ? decodeStatsTotal / elapsed : 0,
-				detectedTari: frameSyncDetector ? 0 : 0,
+				detectedTari: frameSyncDetector ? frameSyncDetector.getLastTariUs() : 0,
 			});
 		}
 	}
@@ -193,43 +203,81 @@ function processDemodData(buffer: Uint8Array, bytesRead: number): void {
 
 	if (symbols.length === 0) return;
 
-	// Run frame sync to find preambles/frame-syncs and extract timing
-	const syncResult = frameSyncDetector.processSymbols(symbols);
-	if (!syncResult) return;
+	dbgSymbolChunks++;
 
-	// Classify remaining symbols into bits using the pivot
-	const dataBits = frameSyncDetector.classifySymbols(
-		symbols.slice(syncResult.dataStartIndex),
-		syncResult.pivotSamples,
-	);
+	// Run frame sync to find all preambles/frame-syncs in this chunk
+	const syncResults = frameSyncDetector.processSymbols(symbols);
 
-	if (dataBits.length < 2) return;
-
-	// Parse command from bits
-	const command = decodeCommand(dataBits, symbols[0].sampleOffset, currentSampleRate);
-
-	// Track inventory round
-	const roundUpdate = inventoryTracker!.processCommand(command);
-
-	// Update stats
-	decodeStatsTotal++;
-	if (command.crcValid !== null) {
-		decodeStatsCrcChecked++;
-		if (command.crcValid) decodeStatsCrcPassed++;
+	// Debug: periodic pipeline report
+	const now = Date.now();
+	if (now - dbgLastReport >= DBG_REPORT_INTERVAL_MS) {
+		dbgLastReport = now;
+		console.log(
+			`[DECODE DBG] symbols_chunks=${dbgSymbolChunks} syncs=${dbgSyncsFound} ` +
+			`fewBits=${dbgTooFewBits} bitCountReject=${dbgBitCountRejected} ` +
+			`crcReject=${dbgCrcRejected} passed=${dbgCommandsPassed} | ` +
+			`this_chunk: symbols=${symbols.length} syncs=${syncResults.length}`
+		);
 	}
 
-	// Add to batch
-	decodedCommandBatch.push({
-		type: command.type,
-		rawBits: command.rawBits,
-		sampleOffset: command.sampleOffset,
-		timestamp: command.timestamp,
-		crcValid: command.crcValid,
-		params: command.params,
-	});
+	if (syncResults.length === 0) return;
 
-	if (roundUpdate) {
-		roundUpdateBatch.push(roundUpdate);
+	for (const syncResult of syncResults) {
+		dbgSyncsFound++;
+
+		// Use pre-extracted dataSymbols from the streaming scanner
+		const dataSymbols = syncResult.dataSymbols ?? [];
+
+		// Classify data symbols into bits using the pivot
+		const dataBits = frameSyncDetector.classifySymbols(
+			dataSymbols,
+			syncResult.pivotSamples,
+		);
+
+		if (dataBits.length < 2) {
+			dbgTooFewBits++;
+			continue;
+		}
+
+		// Parse command from bits
+		const command = decodeCommand(dataBits, syncResult.sampleOffset, currentSampleRate);
+
+		// Track bit-count rejections (decoder returns Unknown for wrong-length commands)
+		if (command.type === 'Unknown') {
+			dbgBitCountRejected++;
+		}
+
+		// Reject commands with failed CRC (null = no CRC field, true = passed)
+		if (command.crcValid === false) {
+			dbgCrcRejected++;
+			continue;
+		}
+
+		dbgCommandsPassed++;
+
+		// Track inventory round
+		const roundUpdate = inventoryTracker!.processCommand(command);
+
+		// Update stats
+		decodeStatsTotal++;
+		if (command.crcValid !== null) {
+			decodeStatsCrcChecked++;
+			if (command.crcValid) decodeStatsCrcPassed++;
+		}
+
+		// Add to batch
+		decodedCommandBatch.push({
+			type: command.type,
+			rawBits: command.rawBits,
+			sampleOffset: command.sampleOffset,
+			timestamp: command.timestamp,
+			crcValid: command.crcValid,
+			params: command.params,
+		});
+
+		if (roundUpdate) {
+			roundUpdateBatch.push(roundUpdate);
+		}
 	}
 }
 
@@ -310,6 +358,9 @@ function handleDspMessage(msg: UsbToDspMessage): void {
 			if (demodProcessor) {
 				demodProcessor.dispose();
 				demodProcessor = null;
+			}
+			if (frameSyncDetector) {
+				frameSyncDetector.reset();
 			}
 			frameSyncDetector = null;
 			if (inventoryTracker) {
