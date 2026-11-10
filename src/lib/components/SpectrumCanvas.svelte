@@ -74,6 +74,12 @@
 		animFrameId = requestAnimationFrame(renderLoop);
 	}
 
+	const spanStart = $derived(
+		((sdrState.frequency - sdrState.sampleRate / 2) / 1_000_000).toFixed(2),
+	);
+	const spanCentre = $derived((sdrState.frequency / 1_000_000).toFixed(2));
+	const spanEnd = $derived(((sdrState.frequency + sdrState.sampleRate / 2) / 1_000_000).toFixed(2));
+
 	onMount(() => {
 		setupCanvas();
 		animFrameId = requestAnimationFrame(renderLoop);
@@ -90,14 +96,37 @@
 	});
 </script>
 
-<div
-	bind:this={containerEl}
-	class="relative h-64 w-full rounded border border-gray-700 bg-gray-900 overflow-hidden"
->
-	<canvas bind:this={canvasEl} class="absolute inset-0"></canvas>
-	{#if !sdrState.capturing}
-		<div class="absolute inset-0 flex items-center justify-center">
-			<span class="text-sm text-gray-500">Spectrum -- start capture to view</span>
-		</div>
-	{/if}
-</div>
+<section class="panel flex flex-col" aria-labelledby="spectrum-title">
+	<div class="panel-hd">
+		<h2 id="spectrum-title" class="card-title">Spectrum</h2>
+		<span class="meta">
+			<span class="num text-[var(--text)]">{spanStart}</span>–<span
+				class="num text-[var(--text)]">{spanEnd}</span
+			> MHz · <span class="num text-[var(--text)]">{displayState.dbMin}</span> to
+			<span class="num text-[var(--text)]">{displayState.dbMax}</span> dB
+		</span>
+	</div>
+
+	<div bind:this={containerEl} class="relative h-64 w-full overflow-hidden">
+		<canvas bind:this={canvasEl} class="absolute inset-0"></canvas>
+
+		{#if !sdrState.capturing}
+			<!-- Honest empty state: the real scale is drawn, nothing is invented. -->
+			<div class="absolute inset-0 px-4 pb-6 pt-4">
+				<div class="relative h-full">
+					<div class="absolute inset-x-0 bottom-0 h-px bg-[var(--control)]"></div>
+					<div class="absolute left-0 top-0 tick num">{displayState.dbMax}</div>
+					<div class="absolute bottom-2 left-0 tick num">{displayState.dbMin}</div>
+					<div class="absolute inset-x-0 bottom-[-18px] flex justify-between">
+						<span class="tick num">{spanStart}</span>
+						<span class="tick num">{spanCentre}</span>
+						<span class="tick num">{spanEnd}</span>
+					</div>
+					<p class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 meta">
+						Start capture to plot the band.
+					</p>
+				</div>
+			</div>
+		{/if}
+	</div>
+</section>

@@ -16,23 +16,14 @@
 	}
 </script>
 
-<div class="rounded border border-gray-700 bg-gray-900 p-4">
-	<h3 class="mb-3 text-sm font-semibold text-gray-300">Capture</h3>
-
-	{#if isCapturing}
-		<button
-			onclick={handleStopCapture}
-			class="w-full rounded bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500"
-		>
-			Stop Capture
-		</button>
-	{:else}
-		<button
-			onclick={handleStartCapture}
-			disabled={!isConnected}
-			class="w-full rounded bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-50"
-		>
-			Start Capture
-		</button>
-	{/if}
-</div>
+{#if isCapturing}
+	<button onclick={handleStopCapture} class="btn btn-quiet">Stop capture</button>
+{:else}
+	<button
+		onclick={handleStartCapture}
+		disabled={!isConnected}
+		class="btn {isConnected ? 'btn-primary' : 'btn-quiet'}"
+	>
+		Start capture
+	</button>
+{/if}

@@ -33,7 +33,7 @@
 	let crcPassRate = $derived(
 		decodeState.stats.crcChecked > 0
 			? ((decodeState.stats.crcPassed / decodeState.stats.crcChecked) * 100).toFixed(1)
-			: '---'
+			: '—'
 	);
 
 	// Auto-scroll: scroll to bottom when new commands arrive
@@ -58,70 +58,84 @@
 	});
 </script>
 
-<div class="flex min-h-[12rem] max-h-[24rem] flex-col rounded border border-gray-700 bg-gray-900">
-	<!-- Header with stats -->
-	<div class="flex items-center justify-between border-b border-gray-700 px-3 py-2">
-		<span class="text-sm font-semibold text-gray-300">Decoded Commands</span>
-		<div class="flex items-center gap-3 text-xs text-gray-500">
-			<span>{decodeState.stats.totalCommands} cmds</span>
-			<span>CRC: {crcPassRate}%</span>
-			<span>{decodeState.stats.commandsPerSec.toFixed(0)} cmd/s</span>
+<section class="panel flex max-h-[24rem] flex-col" aria-labelledby="decoded-title">
+	<div class="panel-hd">
+		<h2 id="decoded-title" class="card-title">Reader commands</h2>
+		<div class="flex items-center gap-4">
+			<span class="meta">
+				<span class="num text-[var(--text)]">{decodeState.stats.totalCommands}</span> decoded
+			</span>
+			<span class="meta">
+				CRC <span class="num text-[var(--text)]">{crcPassRate}</span>{crcPassRate === '—'
+					? ''
+					: '%'} passing
+			</span>
+			<span class="meta">
+				<span class="num text-[var(--text)]"
+					>{decodeState.stats.commandsPerSec.toFixed(0)}</span
+				> cmd/s
+			</span>
 			{#if decodeState.commands.length > 0}
-				<button
-					onclick={clearCommandTimeline}
-					class="rounded px-1.5 py-0.5 text-gray-500 hover:bg-gray-800 hover:text-gray-300"
-					title="Clear commands timeline"
-				>
-					Clear
-				</button>
+				<button onclick={clearCommandTimeline} class="btn-text">Clear</button>
 			{/if}
 		</div>
 	</div>
 
-	<!-- Command list -->
+	<!-- Column header: grey sentence case, no band, no tracking.
+	     Hidden on a phone, where rows fold to two lines and carry their own labels. -->
+	<div
+		class="hidden items-center gap-3 border-b border-[var(--rule)] px-[14px] py-1.5 sm:flex"
+		aria-hidden="true"
+	>
+		<span class="meta w-24 shrink-0 text-right">Offset</span>
+		<span class="meta w-24 shrink-0">Command</span>
+		<span class="meta flex-1">Parameters</span>
+		<span class="meta shrink-0">Checksum</span>
+		<span class="w-3 shrink-0"></span>
+	</div>
+
 	<div bind:this={scrollContainer} onscroll={handleScroll} class="flex-1 overflow-y-auto">
 		{#if decodeState.commands.length === 0}
-			<div class="flex h-full items-center justify-center py-8 text-sm text-gray-600">
+			<p class="meta px-[14px] py-4">
 				{#if decodeState.active}
-					Waiting for RFID signals...
+					Listening. Nothing has synced yet. Check the gain, and that a reader is powered.
 				{:else}
-					Start capture to decode commands
+					Start capture to decode reader commands.
 				{/if}
-			</div>
+			</p>
 		{:else}
 			{#each groupedCommands as group (group.roundId)}
-				<!-- Round separator -->
 				{#if group.roundId > 0}
-					<div
-						class="flex items-center gap-2 bg-gray-950 px-3 py-0.5 text-[10px] text-gray-600"
-					>
-						<span>Round {group.roundId}</span>
-						<div class="h-px flex-1 bg-gray-800"></div>
+					<div class="flex items-center gap-3 px-[14px] py-1">
+						<span class="meta">Inventory round <span class="num">{group.roundId}</span></span>
+						<div class="h-px flex-1 bg-[var(--rule)]"></div>
 						{#if decodeState.showBackscatter && !group.complete}
-							<span class="text-amber-500">incomplete</span>
+							<span class="meta" style="color: var(--warning)">incomplete</span>
 						{/if}
 					</div>
 				{/if}
 
-				<!-- Commands in this round -->
 				{#each group.commands as command (command.sampleOffset)}
 					<DecodedCommandRow {command} />
 				{/each}
 			{/each}
 
-			<!-- Backscatter results (inline, when toggle is ON) -->
 			{#if decodeState.showBackscatter}
 				{#each decodeState.backscatter as result}
 					<div
-						class="flex items-center gap-2 border-b border-gray-800 bg-amber-950/20 px-3 py-1.5 text-xs font-mono"
+						class="flex items-center gap-3 border-b border-[var(--rule)] px-[14px] py-2"
+						title="Experimental backscatter decode"
 					>
-						<span class="text-amber-500" title="Experimental backscatter decode">&#9888;</span>
-						<span class="text-gray-500">{result.encoding}</span>
-						<span class="flex-1 truncate text-gray-400">{result.bits.join('')}</span>
-						<span class="text-amber-400">{(result.confidence * 100).toFixed(0)}%</span>
+						<span class="meta w-24 shrink-0 text-right">tag</span>
+						<span class="w-24 shrink-0 font-medium">{result.encoding}</span>
+						<span class="num flex-1 truncate text-[var(--muted)]">{result.bits.join('')}</span>
+						<span class="meta shrink-0">
+							<span class="num">{(result.confidence * 100).toFixed(0)}</span>% confident
+						</span>
+						<span class="w-3 shrink-0"></span>
 					</div>
 				{/each}
 			{/if}
 		{/if}
 	</div>
-</div>
+</section>

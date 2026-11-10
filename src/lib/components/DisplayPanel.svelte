@@ -12,8 +12,7 @@
 
 	const FFT_SIZES = [256, 512, 1024, 2048];
 
-	function handleFftSizeChange(event: Event) {
-		const size = parseInt((event.target as HTMLSelectElement).value);
+	function selectFftSize(size: number) {
 		setFftSize(size);
 		bridge.setFftSize(size);
 	}
@@ -35,44 +34,46 @@
 	}
 </script>
 
-<div class="rounded border border-gray-700 bg-gray-900">
+<section class="group">
 	<button
 		onclick={() => (collapsed = !collapsed)}
-		class="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-gray-300 hover:bg-gray-800"
+		aria-expanded={!collapsed}
+		class="flex w-full items-center justify-between"
 	>
-		<span>Display</span>
+		<span class="card-title">Display</span>
 		<svg
-			class="h-4 w-4 text-gray-500 transition-transform {collapsed ? '' : 'rotate-180'}"
+			class="h-4 w-4 transition-transform {collapsed ? '' : 'rotate-180'}"
+			style="color: var(--muted)"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"
+			aria-hidden="true"
 		>
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 		</svg>
 	</button>
 
 	{#if !collapsed}
-		<div class="space-y-4 border-t border-gray-700 px-4 pb-4 pt-3">
-			<!-- FFT Size -->
+		<div class="mt-4 space-y-4">
 			<div>
-				<label for="fft-size-select" class="mb-1 block text-xs text-gray-500">FFT Size</label>
-				<select
-					id="fft-size-select"
-					value={displayState.fftSize}
-					onchange={handleFftSizeChange}
-					class="w-full rounded bg-gray-800 px-3 py-1.5 text-sm text-gray-200 border border-gray-700"
-				>
+				<span class="lbl mb-1" id="fft-label">FFT size</span>
+				<div class="seg" role="group" aria-labelledby="fft-label">
 					{#each FFT_SIZES as size}
-						<option value={size}>{size}</option>
+						<button
+							class="seg-item num"
+							aria-pressed={displayState.fftSize === size}
+							onclick={() => selectFftSize(size)}
+						>
+							{size}
+						</button>
 					{/each}
-				</select>
+				</div>
 			</div>
 
-			<!-- Averaging -->
 			<div>
-				<label for="averaging-range" class="mb-1 block text-xs text-gray-500"
-					>Averaging ({displayState.averaging.toFixed(2)})</label
-				>
+				<label for="averaging-range" class="lbl mb-1">
+					Averaging <span class="num text-[var(--text)]">{displayState.averaging.toFixed(2)}</span>
+				</label>
 				<input
 					id="averaging-range"
 					type="range"
@@ -81,48 +82,46 @@
 					step="0.01"
 					value={displayState.averaging}
 					oninput={handleAveragingChange}
-					class="w-full accent-blue-500"
+					class="w-full"
 				/>
 			</div>
 
-			<!-- dB Min -->
-			<div>
-				<label for="db-min-input" class="mb-1 block text-xs text-gray-500">dB Floor</label>
-				<input
-					id="db-min-input"
-					type="number"
-					value={displayState.dbMin}
-					onchange={handleDbMinChange}
-					min="-150"
-					max="-10"
-					class="w-full rounded bg-gray-800 px-3 py-1.5 text-sm text-gray-200 border border-gray-700"
-				/>
+			<div class="flex gap-3">
+				<div class="flex-1">
+					<label for="db-min-input" class="lbl mb-1">Floor, dB</label>
+					<input
+						id="db-min-input"
+						type="number"
+						value={displayState.dbMin}
+						onchange={handleDbMinChange}
+						min="-150"
+						max="-10"
+						class="ctl"
+					/>
+				</div>
+				<div class="flex-1">
+					<label for="db-max-input" class="lbl mb-1">Ceiling, dB</label>
+					<input
+						id="db-max-input"
+						type="number"
+						value={displayState.dbMax}
+						onchange={handleDbMaxChange}
+						min="-50"
+						max="0"
+						class="ctl"
+					/>
+				</div>
 			</div>
 
-			<!-- dB Max -->
-			<div>
-				<label for="db-max-input" class="mb-1 block text-xs text-gray-500">dB Ceiling</label>
-				<input
-					id="db-max-input"
-					type="number"
-					value={displayState.dbMax}
-					onchange={handleDbMaxChange}
-					min="-50"
-					max="0"
-					class="w-full rounded bg-gray-800 px-3 py-1.5 text-sm text-gray-200 border border-gray-700"
-				/>
-			</div>
-
-			<!-- FPS Indicator -->
-			<div class="flex items-center justify-between text-xs">
-				<span class="text-gray-500">FPS</span>
-				<span class="text-gray-300">
-					{displayState.currentFps} fps
+			<div class="flex items-baseline justify-between gap-3">
+				<span class="meta">Redraw rate</span>
+				<span class="meta">
+					<span class="num text-[var(--text)]">{displayState.currentFps}</span> fps
 					{#if displayState.throttled}
-						<span class="text-amber-400">(throttled)</span>
+						<span style="color: var(--warning)">· throttled</span>
 					{/if}
 				</span>
 			</div>
 		</div>
 	{/if}
-</div>
+</section>

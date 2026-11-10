@@ -32,17 +32,25 @@ describe('generateHeatmapColormap', () => {
 		}
 	});
 
-	it('mid-range around green-yellow has high G channel', () => {
+	it('rises monotonically in luminance', () => {
+		// The property a spectrogram ramp must have and that jet does not:
+		// a brighter pixel always means a stronger bin.
 		const colormap = generateHeatmapColormap();
-		// Around index 140 (55% of 255 = ~140), should be in green region
-		const offset = 140 * 4;
-		expect(colormap[offset + 1]).toBeGreaterThan(200); // G should be high
+		const lum = (i: number) =>
+			0.2126 * colormap[i * 4] + 0.7152 * colormap[i * 4 + 1] + 0.0722 * colormap[i * 4 + 2];
+
+		for (let i = 1; i < 256; i++) {
+			expect(lum(i), `index ${i} is darker than ${i - 1}`).toBeGreaterThanOrEqual(lum(i - 1));
+		}
 	});
 
-	it('has blue dominance in early indices', () => {
+	it('stays on one hue: blue is never below red or green', () => {
 		const colormap = generateHeatmapColormap();
-		// Around index 76 (30% of 255 = ~76), should be in blue region
-		const offset = 76 * 4;
-		expect(colormap[offset + 2]).toBeGreaterThan(200); // B should be high
+		for (let i = 0; i < 256; i++) {
+			const [r, g, b] = [colormap[i * 4], colormap[i * 4 + 1], colormap[i * 4 + 2]];
+			expect(b, `index ${i}`).toBeGreaterThanOrEqual(r);
+			expect(b, `index ${i}`).toBeGreaterThanOrEqual(g);
+		}
 	});
+
 });

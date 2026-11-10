@@ -38,54 +38,47 @@
 
 	const statusColor = $derived(
 		sdrState.connectionStatus === 'connected'
-			? 'bg-green-500'
+			? 'var(--positive)'
 			: sdrState.connectionStatus === 'connecting'
-				? 'bg-yellow-500'
+				? 'var(--warning)'
 				: sdrState.connectionStatus === 'error'
-					? 'bg-red-500'
-					: 'bg-gray-500',
+					? 'var(--negative)'
+					: 'var(--control)',
 	);
 
 	const statusText = $derived(
 		sdrState.connectionStatus === 'connected'
-			? 'Connected'
+			? 'Dongle paired'
 			: sdrState.connectionStatus === 'connecting'
-				? 'Connecting...'
+				? 'Pairing…'
 				: sdrState.connectionStatus === 'error'
-					? sdrState.errorMessage || 'Error'
-					: 'Disconnected',
+					? sdrState.errorMessage || 'Pairing failed'
+					: 'No dongle',
 	);
 
 	const isConnected = $derived(sdrState.connectionStatus === 'connected');
 	const isConnecting = $derived(sdrState.connectionStatus === 'connecting');
 </script>
 
-<div class="rounded border border-gray-700 bg-gray-900 p-4">
-	<h3 class="mb-3 text-sm font-semibold text-gray-300">Connection</h3>
+<div class="flex items-center gap-3">
+	<span class="flex items-center gap-2 meta">
+		<span
+			class="inline-block h-2 w-2 shrink-0 rounded-full"
+			style="background: {statusColor}"
+			aria-hidden="true"
+		></span>
+		{statusText}
+	</span>
 
-	<div class="flex items-center gap-3">
-		<div class="flex items-center gap-2">
-			<span class="inline-block h-2.5 w-2.5 rounded-full {statusColor}"></span>
-			<span class="text-sm text-gray-400">{statusText}</span>
-		</div>
-
-		<div class="ml-auto flex gap-2">
-			{#if isConnected}
-				<button
-					onclick={handleDisconnect}
-					class="rounded bg-gray-700 px-3 py-1.5 text-sm text-gray-200 hover:bg-gray-600"
-				>
-					Disconnect
-				</button>
-			{:else}
-				<button
-					onclick={handleConnect}
-					disabled={isRequesting || isConnecting}
-					class="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-				>
-					{isRequesting || isConnecting ? 'Connecting...' : 'Connect'}
-				</button>
-			{/if}
-		</div>
-	</div>
+	{#if isConnected}
+		<button onclick={handleDisconnect} class="btn btn-quiet">Unpair</button>
+	{:else}
+		<button
+			onclick={handleConnect}
+			disabled={isRequesting || isConnecting}
+			class="btn btn-primary"
+		>
+			{isRequesting || isConnecting ? 'Pairing…' : 'Pair dongle'}
+		</button>
+	{/if}
 </div>

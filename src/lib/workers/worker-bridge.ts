@@ -108,7 +108,11 @@ export function createWorkerBridge(): WorkerBridge {
 	usbWorker.onerror = (event: ErrorEvent) => {
 		console.error('[USB Worker] Error:', event.message);
 		sdrState.connectionStatus = 'error';
-		sdrState.errorMessage = `USB Worker error: ${event.message}`;
+		// ErrorEvent.message is empty for a cross-origin or early worker failure,
+		// and "undefined" on screen tells the user nothing they can act on.
+		sdrState.errorMessage = event.message
+			? `USB worker: ${event.message}`
+			: 'The USB worker stopped. Reload the page and pair the dongle again.';
 	};
 
 	// --- FFT data callback ---

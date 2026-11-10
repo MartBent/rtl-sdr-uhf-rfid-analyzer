@@ -72,6 +72,12 @@
 		animFrameId = requestAnimationFrame(renderLoop);
 	}
 
+	const spanStart = $derived(
+		((sdrState.frequency - sdrState.sampleRate / 2) / 1_000_000).toFixed(2),
+	);
+	const spanCentre = $derived((sdrState.frequency / 1_000_000).toFixed(2));
+	const spanEnd = $derived(((sdrState.frequency + sdrState.sampleRate / 2) / 1_000_000).toFixed(2));
+
 	onMount(() => {
 		setupCanvas();
 		animFrameId = requestAnimationFrame(renderLoop);
@@ -88,14 +94,33 @@
 	});
 </script>
 
-<div
-	bind:this={containerEl}
-	class="relative h-64 w-full rounded border border-gray-700 bg-gray-900 overflow-hidden"
->
-	<canvas bind:this={canvasEl} class="absolute inset-0"></canvas>
-	{#if !sdrState.capturing}
-		<div class="absolute inset-0 flex items-center justify-center">
-			<span class="text-sm text-gray-500">Waterfall -- start capture to view</span>
+<section class="panel flex flex-col" aria-labelledby="waterfall-title">
+	<div class="panel-hd">
+		<h2 id="waterfall-title" class="card-title">Waterfall</h2>
+		<div class="flex items-center gap-2">
+			<span class="meta">weak</span>
+			<span class="scale-ramp h-2 w-24 rounded-sm" aria-hidden="true"></span>
+			<span class="meta">strong</span>
 		</div>
-	{/if}
-</div>
+	</div>
+
+	<div bind:this={containerEl} class="relative h-64 w-full overflow-hidden">
+		<canvas bind:this={canvasEl} class="absolute inset-0"></canvas>
+
+		{#if !sdrState.capturing}
+			<div class="absolute inset-0 px-4 pb-6 pt-4">
+				<div class="relative h-full">
+					<div class="absolute inset-x-0 bottom-0 h-px bg-[var(--control)]"></div>
+					<div class="absolute inset-x-0 bottom-[-18px] flex justify-between">
+						<span class="tick num">{spanStart}</span>
+						<span class="tick num">{spanCentre}</span>
+						<span class="tick num">{spanEnd}</span>
+					</div>
+					<p class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 meta">
+						Start capture to fill the history.
+					</p>
+				</div>
+			</div>
+		{/if}
+	</div>
+</section>

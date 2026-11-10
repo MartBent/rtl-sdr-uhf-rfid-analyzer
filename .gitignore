@@ -6,3 +6,6 @@ dist/
 .env.*
 !.env.example
 *.local
+
+# tasteskill working files
+.taste-skill/
